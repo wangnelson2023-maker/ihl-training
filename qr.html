@@ -3,84 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>伊赫莱培训 - 扫码访问</title>
+<title>伊赫莱拜访训练 - 扫码访问</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
-  * { margin:0; padding:0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #0a1f44 0%, #1a3a6b 50%, #0d2b56 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0033A0 0%, #001E5F 100%);
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    padding: 20px;
   }
   .card {
-    background: white;
+    background: #fff;
     border-radius: 20px;
     padding: 40px 30px;
     text-align: center;
+    max-width: 380px;
+    width: 100%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    max-width: 420px;
-    width: 92%;
   }
-  .logo { font-size: 40px; margin-bottom: 10px; }
-  h1 { font-size: 22px; color: #0a1f44; margin-bottom: 6px; }
-  .sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+  .card h2 {
+    font-size: 22px;
+    color: #0033A0;
+    margin-bottom: 6px;
+  }
+  .card .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 24px;
+  }
   #qrcode {
     display: inline-block;
     padding: 12px;
-    background: #f8f9ff;
+    background: #fff;
     border-radius: 12px;
-    margin-bottom: 16px;
+    border: 2px solid #e8ecf1;
+    margin-bottom: 20px;
   }
-  .url {
+  #qrcode img, #qrcode canvas {
+    display: block;
+    margin: 0 auto;
+  }
+  .url-box {
+    background: #f5f7fa;
+    border-radius: 10px;
+    padding: 12px 16px;
     font-size: 13px;
-    color: #0a6ed1;
+    color: #555;
     word-break: break-all;
-    background: #f0f5ff;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    line-height: 1.5;
+    margin-bottom: 20px;
+    border: 1px solid #e8ecf1;
   }
-  .hint { font-size: 12px; color: #999; margin-top: 8px; }
-  .status { font-size: 12px; color: #52c41a; margin-top: 8px; }
-  .warning {
-    background: #fff8e6;
-    border: 1px solid #ffd666;
-    border-radius: 8px;
-    padding: 10px 14px;
+  .tip {
     font-size: 12px;
-    color: #8a6d14;
-    text-align: left;
-    margin-top: 12px;
+    color: #aaa;
+    line-height: 1.6;
+  }
+  .badge {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #0033A0;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
   }
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="logo">💊</div>
-  <h1>伊赫莱销售培训</h1>
-  <div class="sub">罗氏制药 · 西区团队</div>
+  <div class="badge">微信扫码即可访问</div>
+  <h2>伊赫莱拜访训练</h2>
+  <p class="subtitle">伊那利塞 · 医药代表拜访模拟训练</p>
+  
   <div id="qrcode"></div>
-  <div class="url" id="urlDisplay"></div>
-  <div class="hint">📱 使用微信扫码即可打开</div>
-  <div class="status" id="status">✅ 公网链接已就绪</div>
-  <div class="warning">
-    ⚠️ <strong>注意：</strong>此链接依赖本地电脑运行，请确保电脑保持开机状态。如需稳定永久链接，建议部署到 GitHub Pages 或 Vercel。
+  
+  <div class="url-box">
+    ihl-training-production.up.railway.app
+  </div>
+  
+  <div class="tip">
+    💡 微信内长按扫码即可打开<br>
+    🖥️ 也可在电脑浏览器中访问
   </div>
 </div>
+
 <script>
-  var PUBLIC_URL = 'https://7b5dc4b71c4f6c2d-141-11-238-99.serveousercontent.com';
-  var fullUrl = PUBLIC_URL + '/index.html';
-  document.getElementById('urlDisplay').textContent = fullUrl;
-  new QRCode(document.getElementById('qrcode'), {
-    text: fullUrl,
+  const url = "https://ihl-training-production.up.railway.app";
+  new QRCode(document.getElementById("qrcode"), {
+    text: url,
     width: 220,
     height: 220,
-    colorDark: '#0a1f44',
-    colorLight: '#ffffff'
+    colorDark: "#0033A0",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
   });
 </script>
 </body>
