@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>伊赫莱拜访训练 - 扫码访问</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -79,7 +78,11 @@
   <h2>伊赫莱拜访训练</h2>
   <p class="subtitle">伊那利塞 · 医药代表拜访模拟训练</p>
   
-  <div id="qrcode"></div>
+  <div id="qrcode">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://ihl-training-production.up.railway.app" 
+         alt="扫码访问伊赫莱拜访训练" width="220" height="220" 
+         style="display:block;margin:0 auto;">
+  </div>
   
   <div class="url-box">
     ihl-training-production.up.railway.app
@@ -91,16 +94,5 @@
   </div>
 </div>
 
-<script>
-  const url = "https://ihl-training-production.up.railway.app";
-  new QRCode(document.getElementById("qrcode"), {
-    text: url,
-    width: 220,
-    height: 220,
-    colorDark: "#0033A0",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.M
-  });
-</script>
 </body>
 </html>
