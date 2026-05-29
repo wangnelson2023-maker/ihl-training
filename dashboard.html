@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>伊赫莱拜访训练 · 管理者看板</title>
+<style>
+:root {
+    --roche-blue: #0033A0;
+    --roche-blue-bg: #EBF0FA;
+    --roche-blue-pale: #F5F7FC;
+    --bg-white: #FFFFFF;
+    --bg-page: #F5F6FA;
+    --text-primary: #1A1A2E;
+    --text-secondary: #5F6368;
+    --text-hint: #9AA0A6;
+    --border: #E8E8F0;
+    --success: #0F9D58;
+    --warning: #F4B400;
+    --danger: #DB4437;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+/* Login */
+.login-overlay {
+    position: fixed; inset: 0; background: linear-gradient(135deg, var(--roche-blue) 0%, #002580 100%);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.login-card {
+    background: #fff; border-radius: var(--radius-lg); padding: 32px 24px;
+    width: 90%; max-width: 360px; text-align: center; box-shadow: var(--shadow-md);
+}
+.login-card h2 { font-size: 20px; margin-bottom: 6px; color: var(--roche-blue); }
+.login-card .subtitle { font-size: 13px; color: var(--text-hint); margin-bottom: 24px; }
+.login-card input {
+    width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 15px; text-align: center; margin-bottom: 16px;
+    outline: none; transition: border-color 0.2s;
+}
+.login-card input:focus { border-color: var(--roche-blue); }
+.login-card .btn { width: 100%; padding: 12px; font-size: 15px; }
+.login-card .error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--roche-blue) 0%, #002580 100%);
+    color: #fff; padding: 20px 16px;
+}
+.header-row { display: flex; justify-content: space-between; align-items: center; }
+.header h1 { font-size: 18px; }
+.header .logout-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+/* Content */
+.container { max-width: 900px; margin: 0 auto; padding: 16px; }
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card {
+    background: #fff; border-radius: var(--radius-md); padding: 16px 12px;
+    text-align: center; box-shadow: var(--shadow-sm);
+}
+.stat-num { font-size: 24px; font-weight: 800; color: var(--roche-blue); }
+.stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+/* Card */
+.card {
+    background: #fff; border-radius: var(--radius-md); padding: 20px;
+    box-shadow: var(--shadow-sm); margin-bottom: 16px;
+}
+.card-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+/* Charts */
+.chart-area { position: relative; }
+.chart-area canvas { width: 100%; max-width: 100%; display: block; }
+/* Distribution bar */
+.dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.dist-label { width: 50px; font-size: 12px; color: var(--text-secondary); text-align: right; flex-shrink: 0; }
+.dist-bar-wrap { flex: 1; height: 22px; background: #F0F0F5; border-radius: 4px; overflow: hidden; }
+.dist-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: #fff; font-weight: 600; }
+/* User table */
+.user-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.user-table th { text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--border); color: var(--text-secondary); font-weight: 600; font-size: 12px; }
+.user-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+.user-table tr { cursor: pointer; transition: background 0.15s; }
+.user-table tr:hover { background: var(--roche-blue-pale); }
+.user-table .score-cell { font-weight: 600; }
+/* Detail overlay */
+.detail-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500;
+    display: none; flex-direction: column; justify-content: flex-end;
+}
+.detail-overlay.show { display: flex; }
+.detail-panel {
+    background: #fff; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 85vh; overflow-y: auto;
+}
+.detail-header {
+    position: sticky; top: 0; background: linear-gradient(135deg, var(--roche-blue) 0%, #002580 100%);
+    color: #fff; padding: 14px 18px; display: flex; justify-content: space-between;
+    align-items: center; border-radius: var(--radius-lg) var(--radius-lg) 0 0; z-index: 1;
+}
+.detail-header h3 { font-size: 16px; color: #fff; }
+.detail-close { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+.detail-body { padding: 16px 18px 24px; }
+.detail-dim-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 13px; }
+.detail-dim-name { width: 64px; color: var(--text-secondary); flex-shrink: 0; }
+.detail-dim-bar { flex: 1; height: 6px; background: #F0F0F5; border-radius: 3px; overflow: hidden; }
+.detail-dim-fill { height: 100%; border-radius: 3px; }
+.detail-dim-val { width: 32px; text-align: right; font-weight: 600; }
+.detail-chat { margin-top: 12px; }
+.detail-chat-item { padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 13px; line-height: 1.6; }
+.detail-chat-item.rep { background: var(--roche-blue-bg); border-left: 3px solid var(--roche-blue); }
+.detail-chat-item.doc { background: #FFF8E1; border-left: 3px solid var(--warning); }
+.detail-chat-item .role-tag { font-weight: 600; font-size: 11px; margin-bottom: 2px; display: block; }
+.btn {
+    display: inline-block; padding: 10px 20px; border-radius: 8px; border: none;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--roche-blue); color: #fff; }
+.btn-primary:hover { background: #002580; }
+.btn-outline { background: #fff; color: var(--roche-blue); border: 1.5px solid var(--roche-blue); }
+.loading { text-align: center; padding: 40px; color: var(--text-hint); }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-hint); }
+.empty-state .icon { font-size: 40px; margin-bottom: 8px; }
+.refresh-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.refresh-bar .last-update { font-size: 12px; color: var(--text-hint); }
+.refresh-bar .refresh-btn { background: var(--roche-blue-bg); border: none; color: var(--roche-blue); padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+@media (max-width: 640px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-overlay" id="loginOverlay">
+<div class="login-card">
+    <h2>🔐 管理者登录</h2>
+    <p class="subtitle">伊赫莱拜访训练 · 后台看板</p>
+    <input type="password" id="mgrPassword" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-primary" onclick="doLogin()">进入看板</button>
+    <p class="error-msg" id="loginError">密码错误，请重试</p>
+</div>
+</div>
+
+<!-- Main -->
+<div id="mainApp" style="display:none;">
+<div class="header">
+    <div class="header-row">
+        <h1>📊 伊赫莱拜访训练 · 管理者看板</h1>
+        <button class="logout-btn" onclick="doLogout()">退出</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="refresh-bar">
+        <span class="last-update" id="lastUpdate">加载中...</span>
+        <button class="refresh-btn" onclick="refreshAll()">🔄 刷新数据</button>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="sTotal">--</div><div class="stat-label">总练习次数</div></div>
+        <div class="stat-card"><div class="stat-num" id="sUsers">--</div><div class="stat-label">活跃人数</div></div>
+        <div class="stat-card"><div class="stat-num" id="sAvg">--</div><div class="stat-label">平均得分</div></div>
+        <div class="stat-card"><div class="stat-num" id="sMax">--</div><div class="stat-label">最高得分</div></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📊 得分分布</div>
+        <div class="chart-area" id="distChart"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🎯 五维能力雷达 · 团队均值</div>
+        <div class="chart-area"><canvas id="radarCanvas"></canvas></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">👥 成员练习情况</div>
+        <div style="overflow-x:auto;">
+            <table class="user-table">
+                <thead><tr><th>姓名</th><th>练习次数</th><th>平均分</th><th>最高分</th><th>最近练习</th></tr></thead>
+                <tbody id="userTableBody"><tr><td colspan="5" class="loading">加载中...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- User Detail Overlay -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+    <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<script>
+let token = '';
+let allRecords = [];
+let allStats = null;
+
+// Try to use saved token
+const savedToken = localStorage.getItem('ihl_mgr_token');
+if (savedToken) {
+    token = savedToken;
+    verifyAndEnter();
+}
+
+function doLogin() {
+    const pw = document.getElementById('mgrPassword').value.trim();
+    if (!pw) return;
+    document.getElementById('loginError').style.display = 'none';
+    fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+    }).then(r => r.json()).then(data => {
+        if (data.success) {
+            token = data.token;
+            localStorage.setItem('ihl_mgr_token', token);
+            enterDashboard();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }).catch(() => {
+        document.getElementById('loginError').textContent = '网络错误，请确认服务已启动';
+        document.getElementById('loginError').style.display = 'block';
+    });
+}
+
+function doLogout() {
+    fetch('/api/auth/logout?token=' + encodeURIComponent(token), { method: 'POST' }).catch(() => {});
+    token = '';
+    localStorage.removeItem('ihl_mgr_token');
+    allRecords = [];
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('loginOverlay').style.display = 'flex';
+}
+
+function verifyAndEnter() {
+    fetch('/api/health?token=' + encodeURIComponent(token))
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') { enterDashboard(); }
+            else { token = ''; localStorage.removeItem('ihl_mgr_token'); }
+        })
+        .catch(() => { /* server might not have auth on health check, try stats */ });
+}
+
+function enterDashboard() {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    refreshAll();
+}
+
+function refreshAll() {
+    document.getElementById('lastUpdate').textContent = '加载中...';
+    fetch('/api/stats?token=' + encodeURIComponent(token))
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) { alert('鉴权失败，请重新登录'); doLogout(); return; }
+            allStats = data;
+            renderStats(data);
+            renderDistribution(data);
+            renderRadar(data);
+            renderUserTable(data);
+            document.getElementById('lastUpdate').textContent = '更新于 ' + new Date().toLocaleTimeString('zh-CN');
+        })
+        .catch(e => {
+            document.getElementById('lastUpdate').textContent = '加载失败: ' + e.message;
+        });
+}
+
+function renderStats(data) {
+    document.getElementById('sTotal').textContent = data.totalPractices;
+    document.getElementById('sUsers').textContent = data.activeUsers;
+    document.getElementById('sAvg').textContent = data.avgScore;
+    document.getElementById('sMax').textContent = data.maxScore;
+}
+
+function renderDistribution(data) {
+    const dist = data.scoreDistribution;
+    if (!dist) return;
+    const maxCount = Math.max(1, ...Object.values(dist));
+    const colors = ['#DB4437', '#F4B400', '#FBBC04', '#34A853', '#0033A0'];
+    document.getElementById('distChart').innerHTML = Object.entries(dist).map(([range, count], i) => {
+        const pct = count > 0 ? Math.max(8, (count / maxCount) * 100) : 0;
+        return `<div class="dist-row">
+            <span class="dist-label">${range}</span>
+            <div class="dist-bar-wrap">
+                <div class="dist-bar-fill" style="width:${pct}%;background:${colors[i]}">${count > 0 ? count : ''}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderRadar(data) {
+    const avgs = data.dimensionAvgs;
+    if (!avgs) return;
+    const canvas = document.getElementById('radarCanvas');
+    const dpr = window.devicePixelRatio || 1;
+    const container = canvas.parentElement;
+    const width = Math.min(container.clientWidth - 20, 560);
+    const height = 280;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+
+    const dims = ['knowledge', 'discovery', 'competition', 'objection', 'technique'];
+    const dimNames = ['产品知识', '需求挖掘', '竞品应对', '异议处理', '拜访技巧'];
+    const n = dims.length;
+    const cx = width / 2, cy = height / 2 + 5;
+    const maxR = Math.min(width, height) / 2 - 50;
+    const maxVal = 10;
+
+    // Grid
+    for (let level = 2; level <= 10; level += 2) {
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) {
+            const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+            const r = (level / maxVal) * maxR;
+            const x = cx + r * Math.cos(angle), y = cy + r * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = '#E8E8F0'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = '#C0C4CC'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(level, cx, cy - (level / maxVal) * maxR + 3);
+    }
+
+    // Axes
+    for (let i = 0; i < n; i++) {
+        const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + maxR * Math.cos(angle), cy + maxR * Math.sin(angle));
+        ctx.strokeStyle = '#E0E4E8'; ctx.stroke();
+        const lx = cx + (maxR + 22) * Math.cos(angle), ly = cy + (maxR + 22) * Math.sin(angle);
+        ctx.fillStyle = '#1A1A2E'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(dimNames[i], lx, ly);
+    }
+
+    // Data radar
+    const vals = dims.map(d => avgs[d] || 0);
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+        const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+        const r = (vals[i] / maxVal) * maxR;
+        const x = cx + r * Math.cos(angle), y = cy + r * Math.sin(angle);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(0,51,160,0.12)'; ctx.fill();
+    ctx.strokeStyle = '#0033A0'; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // Dots
+    for (let i = 0; i < n; i++) {
+        const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+        const r = (vals[i] / maxVal) * maxR;
+        const x = cx + r * Math.cos(angle), y = cy + r * Math.sin(angle);
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#0033A0'; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = '#0033A0'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(vals[i], x, y - 10);
+    }
+}
+
+function renderUserTable(data) {
+    const users = data.userStats || [];
+    if (users.length === 0) {
+        document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" class="empty-state"><div class="icon">📭</div>暂无练习数据</td></tr>';
+        return;
+    }
+    document.getElementById('userTableBody').innerHTML = users.map(u => `
+        <tr onclick="viewUserDetail('${u.userId}')">
+            <td><strong>${escHtml(u.name)}</strong></td>
+            <td>${u.count} 次</td>
+            <td class="score-cell" style="color:${colorForScore(u.avgScore)}">${u.avgScore}</td>
+            <td class="score-cell" style="color:${colorForScore(u.maxScore)}">${u.maxScore}</td>
+            <td style="font-size:12px;color:var(--text-hint)">${fmtDate(u.lastPractice)}</td>
+        </tr>
+    `).join('');
+}
+
+function colorForScore(s) { return s >= 40 ? '#0F9D58' : s >= 30 ? '#F4B400' : '#DB4437'; }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(d) { if (!d) return '--'; return new Date(d).toLocaleDateString('zh-CN'); }
+
+function viewUserDetail(userId) {
+    document.getElementById('detailPanel').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-hint)">加载中...</div>';
+    document.getElementById('detailOverlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    fetch('/api/records?token=' + encodeURIComponent(token) + '&userId=' + encodeURIComponent(userId) + '&limit=20')
+        .then(r => r.json()).then(data => {
+            if (data.error) { closeDetail(); alert(data.error); return; }
+            renderUserDetail(data.records);
+        }).catch(e => { closeDetail(); alert('加载失败: ' + e.message); });
+}
+
+const attitudeLabels = { '支持':'支持型','反对':'反对型','中立':'中立型','忙碌':'忙碌型' };
+const roleLabels = { '主任':'科室主任','带组':'带组医生','主治':'主治医师','住院':'住院医师' };
+const dimNames = ['产品知识','需求挖掘','竞品应对','异议处理','拜访技巧'];
+const dims = ['knowledge','discovery','competition','objection','technique'];
+const dimColors = ['#0033A0','#0F9D58','#F4B400','#DB4437','#7B1FA2'];
+
+function renderUserDetail(records) {
+    if (!records || records.length === 0) {
+        document.getElementById('detailPanel').innerHTML = '<div class="detail-header"><h3>练习详情</h3><button class="detail-close" onclick="closeDetail()">✕</button></div><div class="detail-body"><div class="empty-state">暂无记录</div></div>';
+        return;
+    }
+
+    const userName = records[0].user && records[0].user.name || '未知';
+    const itemsHtml = records.map(r => {
+        const dimsHtml = dims.map((d, i) => {
+            return `<div class="detail-dim-row">
+                <span class="detail-dim-name">${dimNames[i]}</span>
+                <div class="detail-dim-bar"><div class="detail-dim-fill" style="width:${(r.scores[d]||0)*10}%;background:${dimColors[i]}"></div></div>
+                <span class="detail-dim-val">${r.scores[d]||0}/10</span>
+            </div>`;
+        }).join('');
+
+        const chatHtml = (r.messages || []).slice(0, 6).map(m => {
+            const cls = m.role === 'rep' ? 'rep' : 'doc';
+            const rn = m.role === 'rep' ? '💊 销售' : '👨‍⚕️ 医生';
+            return `<div class="detail-chat-item ${cls}"><span class="role-tag">${rn}</span>${escHtml(m.text)}</div>`;
+        }).join('');
+
+        return `<div style="margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+            <div style="padding:10px 14px;background:var(--roche-blue-pale);display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;font-weight:600;">${roleLabels[r.roleType]||r.roleType} · ${attitudeLabels[r.attitude]||r.attitude}</span>
+                <span style="font-size:14px;font-weight:700;color:${colorForScore(r.total)}">${r.total}/50</span>
+            </div>
+            <div style="padding:10px 14px;">
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+                    🎯 ${(r.scenarios||[]).join('、')} &nbsp; 💬 ${(r.messages||[]).length}轮 &nbsp; 🕐 ${fmtDate(r.time)}
+                </div>
+                ${dimsHtml}
+                ${chatHtml ? '<div class="detail-chat" style="margin-top:8px;">' + chatHtml + '</div>' : ''}
+            </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('detailPanel').innerHTML = `
+        <div class="detail-header">
+            <h3>👤 ${escHtml(userName)} — 练习记录 (${records.length}次)</h3>
+            <button class="detail-close" onclick="closeDetail()">✕</button>
+        </div>
+        <div class="detail-body">${itemsHtml}</div>
+    `;
+}
+
+function closeDetail() {
+    document.getElementById('detailOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+}
+</script>
+</body>
+</html>

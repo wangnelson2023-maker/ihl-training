@@ -1,0 +1,12 @@
+{
+  "name": "ihl-training",
+  "version": "2.0.0",
+  "description": "伊赫莱拜访训练平台 - 罗氏制药西区销售团队",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

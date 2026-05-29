@@ -1,0 +1,3105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>伊赫莱拜访训练</title>
+    <style>
+        :root {
+            --roche-blue: #0033A0;
+            --roche-blue-light: #0052CC;
+            --roche-blue-bg: #E8F0FE;
+            --roche-blue-pale: #F4F7FC;
+            --text-primary: #1A1A2E;
+            --text-secondary: #5F6368;
+            --text-hint: #9AA0A6;
+            --border: #E0E4E8;
+            --bg-white: #FFFFFF;
+            --bg-page: #F5F6FA;
+            --success: #0F9D58;
+            --warning: #F4B400;
+            --danger: #DB4437;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --tab-height: 60px;
+            --header-height: 50px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            max-width: 750px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--roche-blue) 0%, #002580 100%);
+            color: #fff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: var(--header-height);
+            box-shadow: 0 2px 8px rgba(0,51,160,0.2);
+        }
+        .app-header .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-header .logo-icon {
+            width: 28px; height: 28px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .app-header .app-title {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .app-header .user-info {
+            font-size: 12px;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-bottom: calc(var(--tab-height) + var(--safe-bottom) + 16px);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .tab-content {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottom Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 750px;
+            height: calc(var(--tab-height) + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
+            background: var(--bg-white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+            color: var(--text-hint);
+            transition: color 0.2s;
+            font-size: 11px;
+            user-select: none;
+        }
+        .tab-item.active { color: var(--roche-blue); }
+        .tab-item .tab-icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+        .tab-item .tab-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+        .card-title .icon { font-size: 20px; }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 14px 12px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-card .stat-num {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--roche-blue);
+            line-height: 1.2;
+        }
+        .stat-card .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--roche-blue);
+            color: #fff;
+        }
+        .btn-primary:active { background: #002580; }
+        .btn-outline {
+            background: transparent;
+            color: var(--roche-blue);
+            border: 1.5px solid var(--roche-blue);
+        }
+        .btn-block { width: 100%; }
+        .btn-lg { padding: 14px 24px; font-size: 16px; border-radius: var(--radius-md); }
+
+        /* Knowledge List */
+        .knowledge-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .knowledge-item:last-child { border-bottom: none; }
+        .knowledge-item .ki-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .knowledge-item .ki-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .ki-icon.blue { background: #E8F0FE; }
+        .ki-icon.green { background: #E6F4EA; }
+        .ki-icon.orange { background: #FEF7E0; }
+        .ki-icon.purple { background: #F3E8FD; }
+        .ki-icon.red { background: #FCE8E6; }
+        .knowledge-item .ki-title { font-size: 14px; font-weight: 500; }
+        .knowledge-item .ki-desc { font-size: 12px; color: var(--text-secondary); }
+        .knowledge-item .ki-arrow { color: var(--text-hint); font-size: 16px; }
+
+        /* Role Play */
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .tag {
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1.5px solid var(--border);
+            background: var(--bg-white);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .tag.selected {
+            background: var(--roche-blue);
+            color: #fff;
+            border-color: var(--roche-blue);
+        }
+        .tag:active { transform: scale(0.96); }
+
+        /* Scenario List */
+        .scenario-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .scenario-item.selected {
+            border-color: var(--roche-blue);
+            background: var(--roche-blue-bg);
+        }
+        .scenario-item .sc-check {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .scenario-item.selected .sc-check {
+            border-color: var(--roche-blue);
+            background: var(--roche-blue);
+            color: #fff;
+            font-size: 12px;
+        }
+        .scenario-item .sc-title { font-size: 14px; font-weight: 500; }
+        .scenario-item .sc-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+        /* Chat UI */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - var(--header-height) - var(--tab-height) - var(--safe-bottom) - 32px);
+        }
+        .chat-header {
+            background: var(--bg-white);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-header .role-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--roche-blue-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .chat-header .role-info { flex: 1; }
+        .chat-header .role-name { font-size: 14px; font-weight: 600; }
+        .chat-header .role-meta { font-size: 11px; color: var(--text-secondary); }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .chat-bubble.doctor {
+            align-self: flex-start;
+            background: var(--bg-white);
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+        .chat-bubble.rep {
+            align-self: flex-end;
+            background: var(--roche-blue);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            padding: 8px 0;
+            background: var(--bg-page);
+        }
+        .chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            background: var(--bg-white);
+        }
+        .chat-input:focus { border-color: var(--roche-blue); }
+        .chat-send-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--roche-blue);
+            color: #fff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mic-btn { background: var(--text-hint); transition: all 0.3s; }
+        .mic-btn.listening { background: var(--danger); animation: micPulse 1.5s infinite; }
+        @keyframes micPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(219,68,55,0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(219,68,55,0); }
+        }
+        .tts-indicator {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 11px; color: var(--roche-blue); margin-left: 8px;
+            cursor: pointer; user-select: none;
+        }
+
+        /* Score Card */
+        .score-overall {
+            text-align: center;
+            padding: 20px;
+        }
+        .score-circle {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--roche-blue), var(--roche-blue-light));
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .score-circle .big-num { font-size: 36px; font-weight: 700; line-height: 1; }
+        .score-circle .total { font-size: 14px; opacity: 0.8; }
+        .score-dimension {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .score-dimension:last-child { border-bottom: none; }
+        .score-dim-name { font-size: 13px; }
+        .score-dim-bar {
+            flex: 1;
+            height: 6px;
+            background: #E8EAED;
+            border-radius: 3px;
+            margin: 0 12px;
+            overflow: hidden;
+        }
+        .score-dim-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--roche-blue);
+            transition: width 0.6s ease;
+        }
+        .score-dim-val { font-size: 13px; font-weight: 600; color: var(--roche-blue); min-width: 28px; text-align: right; }
+
+        /* Record List */
+        .record-item {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+        }
+        .record-item .rec-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .record-item .rec-scene {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .record-item .rec-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--roche-blue);
+        }
+        .record-item .rec-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-hint);
+        }
+        .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-state .empty-text { font-size: 14px; }
+
+        /* Admin Badge */
+        .admin-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+
+        /* Scrollbar */
+        .chat-messages::-webkit-scrollbar { width: 0; }
+
+        /* Knowledge Base Detail */
+        .kb-chapter-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .kb-chapter-card:active { transform: scale(0.98); }
+        .kb-chapter-card .kb-ch-icon {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .kb-ch-icon.c1 { background: #E8F0FE; } .kb-ch-icon.c2 { background: #E6F4EA; }
+        .kb-ch-icon.c3 { background: #FEF7E0; } .kb-ch-icon.c4 { background: #F3E8FD; }
+        .kb-ch-icon.c5 { background: #FCE8E6; } .kb-ch-icon.c6 { background: #E0F2F1; }
+        .kb-ch-card-info { flex: 1; min-width: 0; }
+        .kb-ch-card-info .kb-ch-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+        .kb-ch-card-info .kb-ch-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .kb-ch-card-arrow { color: var(--text-hint); font-size: 18px; }
+
+        /* KB Detail Content */
+        .kb-detail-title {
+            font-size: 18px; font-weight: 700; margin-bottom: 16px;
+            padding-bottom: 12px; border-bottom: 2px solid var(--roche-blue);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .kb-detail-body { font-size: 14px; line-height: 1.8; color: var(--text-primary); }
+        .kb-detail-body h3 {
+            font-size: 15px; font-weight: 700; color: var(--roche-blue);
+            margin: 18px 0 8px; padding-left: 8px; border-left: 3px solid var(--roche-blue);
+        }
+        .kb-detail-body h4 {
+            font-size: 14px; font-weight: 600; color: var(--text-primary);
+            margin: 14px 0 6px;
+        }
+        .kb-detail-body p { margin: 6px 0; }
+        .kb-detail-body ul, .kb-detail-body ol { margin: 8px 0; padding-left: 20px; }
+        .kb-detail-body li { margin: 4px 0; }
+        .kb-detail-body table {
+            width: 100%; border-collapse: collapse; margin: 10px 0;
+            font-size: 12px;
+        }
+        .kb-detail-body table th, .kb-detail-body table td {
+            border: 1px solid var(--border); padding: 6px 8px;
+            text-align: left; white-space: nowrap;
+        }
+        .kb-detail-body table th {
+            background: var(--roche-blue-bg); color: var(--roche-blue);
+            font-weight: 600; font-size: 11px;
+        }
+        .kb-detail-body table tr:nth-child(even) { background: #FAFBFC; }
+        .kb-detail-body blockquote {
+            margin: 10px 0; padding: 10px 14px;
+            background: var(--roche-blue-pale); border-left: 4px solid var(--roche-blue);
+            border-radius: 0 8px 8px 0; font-size: 13px; color: var(--text-secondary);
+        }
+        .kb-detail-body .kb-highlight {
+            background: #FFF3CD; padding: 2px 4px; border-radius: 3px;
+            font-weight: 600;
+        }
+        .kb-search-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md); padding: 14px 16px;
+            margin-bottom: 10px; box-shadow: var(--shadow-sm); cursor: pointer;
+        }
+        .kb-search-card .kb-sc-chapter {
+            font-size: 11px; color: var(--roche-blue); font-weight: 600; margin-bottom: 4px;
+        }
+        .kb-search-card .kb-sc-title {
+            font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;
+        }
+        .kb-search-card .kb-sc-snippet {
+            font-size: 12px; color: var(--text-secondary); line-height: 1.5;
+        }
+        .kb-search-card .kb-sc-snippet em {
+            background: #FFF3CD; font-style: normal; font-weight: 600; padding: 1px 2px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 85%;
+            max-width: 360px;
+            text-align: center;
+        }
+        .modal h3 { margin-bottom: 12px; font-size: 18px; }
+        .modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
+
+        /* Record Detail Modal */
+        .detail-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 300;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .detail-overlay.show { display: flex; }
+        .detail-panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 0;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .detail-header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, var(--roche-blue) 0%, #002580 100%);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            z-index: 1;
+        }
+        .detail-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .detail-header-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+        .detail-header-info .detail-meta {
+            font-size: 12px;
+            opacity: 0.8;
+            display: flex;
+            gap: 12px;
+        }
+        .detail-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .detail-score-badge {
+            display: inline-block;
+            background: #fff;
+            color: var(--roche-blue);
+            font-size: 22px;
+            font-weight: 800;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+        .detail-body {
+            padding: 16px 20px 24px;
+        }
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        .detail-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .detail-dim-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .detail-dim-name {
+            width: 68px;
+            flex-shrink: 0;
+            color: var(--text-secondary);
+        }
+        .detail-dim-bar {
+            flex: 1;
+            height: 8px;
+            background: #F0F0F5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .detail-dim-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .detail-dim-val {
+            width: 36px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .detail-chat-item {
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .detail-chat-item.rep {
+            background: var(--roche-blue-bg);
+            border-left: 3px solid var(--roche-blue);
+        }
+        .detail-chat-item.doc {
+            background: #FFF8E1;
+            border-left: 3px solid var(--warning);
+        }
+        .detail-chat-item .chat-role {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .detail-highlight-item {
+            padding: 8px 12px;
+            background: #E8F5E9;
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .detail-suggest-item {
+            padding: 8px 12px;
+            background: #FFF3E0;
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+        .detail-actions .btn {
+            flex: 1;
+        }
+        .detail-actions .btn-outline {
+            background: #fff;
+            color: var(--roche-blue);
+            border: 1.5px solid var(--roche-blue);
+        }
+
+        /* Trend Section */
+        .trend-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 14px;
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .trend-tab {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .trend-tab.active {
+            color: var(--roche-blue);
+            border-bottom-color: var(--roche-blue);
+            background: var(--roche-blue-pale);
+        }
+        .trend-chart-area {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 12px;
+            min-height: 200px;
+        }
+        .trend-chart-area canvas {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+        }
+        .trend-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-hint);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon">💊</div>
+            <span class="app-title">伊赫莱 · 拜访训练</span>
+        </div>
+        <div class="user-info" id="userDisplay">
+            <span>👤</span>
+            <span id="userName">未登录</span>
+            <span style="margin-left:8px;cursor:pointer;font-size:14px;color:var(--text-hint);" onclick="openAISettings()" title="AI设置">⚙️</span>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content">
+
+        <!-- Tab 1: 知识库 -->
+        <div class="tab-content active" id="tab-knowledge">
+            <!-- 搜索栏 -->
+            <div style="margin-bottom:12px;position:relative;">
+                <input type="text" class="chat-input" placeholder="🔍 搜索伊赫莱知识库..." style="padding-left:36px;width:100%;" id="knowledgeSearch" oninput="kbSearch()">
+                <span id="kbSearchClear" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-hint);display:none;font-size:16px;" onclick="kbClearSearch()">✕</span>
+            </div>
+
+            <!-- 章节列表视图 -->
+            <div id="kb-list-view">
+                <div class="card" style="background:linear-gradient(135deg,var(--roche-blue-bg),#D6E4FF);">
+                    <div style="font-size:13px;color:var(--roche-blue);font-weight:600;">💡 共14章 · 覆盖产品信息、临床数据、竞品对比、医保政策、拜访话术、不良反应管理等</div>
+                </div>
+                <div id="kb-chapter-list">
+                    <!-- JavaScript动态渲染 -->
+                </div>
+            </div>
+
+            <!-- 章节详情视图 -->
+            <div id="kb-detail-view" style="display:none;">
+                <button class="btn btn-outline" style="margin-bottom:12px;padding:8px 16px;" onclick="kbBackToList()">
+                    ← 返回目录
+                </button>
+                <div class="card" id="kb-detail-content">
+                    <!-- JavaScript动态渲染 -->
+                </div>
+            </div>
+
+            <!-- 搜索结果视图 -->
+            <div id="kb-search-view" style="display:none;">
+                <div style="margin-bottom:12px;font-size:14px;color:var(--text-secondary);" id="kb-search-info"></div>
+                <div id="kb-search-results"></div>
+            </div>
+        </div>
+
+        <!-- Tab 2: 角色扮演 -->
+        <div class="tab-content" id="tab-roleplay">
+            <!-- 配置区域 -->
+            <div id="rp-config">
+                <!-- 角色选择 -->
+                <div class="card">
+                    <div class="card-title"><span class="icon">👨‍⚕️</span> 选择医生角色</div>
+                    <div class="section-label">角色类型</div>
+                    <div class="tag-group" id="roleTypeGroup">
+                        <span class="tag" data-value="主任">科室主任</span>
+                        <span class="tag" data-value="带组">带组医生</span>
+                        <span class="tag" data-value="主治">主治医师</span>
+                        <span class="tag" data-value="住院">住院医师</span>
+                    </div>
+                    <div class="section-label">态度类型</div>
+                    <div class="tag-group" id="attitudeGroup">
+                        <span class="tag" data-value="支持">✅ 支持型</span>
+                        <span class="tag" data-value="反对">❌ 反对型</span>
+                        <span class="tag" data-value="中立">🤔 中立/犹豫型</span>
+                        <span class="tag" data-value="忙碌">⏰ 忙碌型</span>
+                    </div>
+                </div>
+
+                <!-- 挑战场景 -->
+                <div class="card">
+                    <div class="card-title"><span class="icon">🎯</span> 选择挑战场景（可多选）</div>
+                    <div id="scenarioGroup">
+                        <div class="scenario-item" data-value="竞品对比">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">竞品对比挑战</div>
+                                <div class="sc-desc">医生习惯用卡匹色替，认为AKT抑制剂疗效更好</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="医保报销">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">医保报销挑战</div>
+                                <div class="sc-desc">医生担心医保限制条件和患者自付费用</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="换药顾虑">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">换药顾虑挑战</div>
+                                <div class="sc-desc">担心患者从现有方案切换到伊赫莱的风险</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="不良反应">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">不良反应挑战</div>
+                                <div class="sc-desc">担心高血糖、皮疹、腹泻等不良反应管理</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="数据质疑">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">数据质疑挑战</div>
+                                <div class="sc-desc">质疑临床数据对中国人群的适用性</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="价格">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">价格挑战</div>
+                                <div class="sc-desc">即使进医保，患者仍觉得费用太高</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="耐药">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">耐药后策略挑战</div>
+                                <div class="sc-desc">医生询问伊赫莱耐药后的后续方案</div>
+                            </div>
+                        </div>
+                        <div class="scenario-item" data-value="联合用药">
+                            <div class="sc-check">✓</div>
+                            <div>
+                                <div class="sc-title">联合用药挑战</div>
+                                <div class="sc-desc">与氟维司群/哌柏西利联合使用的具体方案</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 开始按钮 -->
+                <button class="btn btn-primary btn-block btn-lg" onclick="startRolePlay()">
+                    🚀 开始拜访练习
+                </button>
+                <div style="text-align:center;margin-top:8px;font-size:12px;color:var(--text-hint);">
+                    请先选择角色和至少一个挑战场景
+                </div>
+            </div>
+
+            <!-- 对话区域（初始隐藏） -->
+            <div id="rp-chat" style="display:none;">
+                <div class="chat-header">
+                    <div class="role-avatar">👨‍⚕️</div>
+                    <div class="role-info">
+                        <div class="role-name" id="chatRoleName">科室主任 · 反对型</div>
+                        <div class="role-meta" id="chatRoleScene"><span id="aiStatusBadge" style="display:inline-block;margin-right:4px;font-size:11px;padding:1px 6px;border-radius:8px;background:#e8f5e9;color:#2e7d32;">⚡ AI模式</span><span id="chatRoleSceneText">竞品对比</span></div>
+                    </div>
+                    <span class="tts-indicator" id="ttsToggle" onclick="toggleTTS()" title="语音播报医生回复">🔊 播报</span>
+                    <button class="btn btn-outline" style="padding:6px 12px;font-size:12px;" onclick="endRolePlay()">
+                        结束拜访
+                    </button>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div style="text-align:center;color:var(--text-hint);font-size:13px;padding:20px;">
+                            👋 对话已开始，请向医生发起拜访
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <button class="chat-send-btn mic-btn" id="micBtn" title="语音输入" onclick="toggleVoiceInput()">🎤</button>
+                        <input type="text" class="chat-input" placeholder="输入你的拜访话术..." id="chatInput" onkeydown="if(event.key==='Enter')sendMessage()">
+                        <button class="chat-send-btn" onclick="sendMessage()">➤</button>
+                    </div>
+                    <div id="voiceStatus" style="display:none;text-align:center;padding:6px;font-size:12px;color:var(--danger);">
+                        🔴 正在录音... <button onclick="cancelVoiceInput()" style="background:none;border:none;color:var(--roche-blue);font-weight:600;cursor:pointer;font-size:12px;">取消</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评分结果区域（初始隐藏） -->
+            <div id="rp-score" style="display:none;">
+                <div class="card">
+                    <div class="score-overall">
+                        <div class="score-circle">
+                            <span class="big-num" id="totalScore">--</span>
+                            <span class="total">/ 50</span>
+                        </div>
+                        <div style="font-size:16px;font-weight:600;">拜访综合评分</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="icon">📊</span> 分项评分</div>
+                    <div id="dimensionScores">
+                        <div class="score-dimension">
+                            <span class="score-dim-name">产品知识</span>
+                            <div class="score-dim-bar"><div class="score-dim-fill" style="width:0%"></div></div>
+                            <span class="score-dim-val">-/10</span>
+                        </div>
+                        <div class="score-dimension">
+                            <span class="score-dim-name">需求挖掘</span>
+                            <div class="score-dim-bar"><div class="score-dim-fill" style="width:0%"></div></div>
+                            <span class="score-dim-val">-/10</span>
+                        </div>
+                        <div class="score-dimension">
+                            <span class="score-dim-name">竞品应对</span>
+                            <div class="score-dim-bar"><div class="score-dim-fill" style="width:0%"></div></div>
+                            <span class="score-dim-val">-/10</span>
+                        </div>
+                        <div class="score-dimension">
+                            <span class="score-dim-name">异议处理</span>
+                            <div class="score-dim-bar"><div class="score-dim-fill" style="width:0%"></div></div>
+                            <span class="score-dim-val">-/10</span>
+                        </div>
+                        <div class="score-dimension">
+                            <span class="score-dim-name">拜访技巧</span>
+                            <div class="score-dim-bar"><div class="score-dim-fill" style="width:0%"></div></div>
+                            <span class="score-dim-val">-/10</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="icon">⭐</span> 亮点</div>
+                    <div id="scoreHighlights" style="font-size:14px;color:var(--text-secondary);">
+                        暂无数据
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="icon">💡</span> 改进建议</div>
+                    <div id="scoreSuggestions" style="font-size:14px;color:var(--text-secondary);">
+                        暂无数据
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block btn-lg" onclick="resetRolePlay()">
+                    🔄 开始新的练习
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab 3: 我的记录 -->
+        <div class="tab-content" id="tab-records">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-num" id="statTotal">0</div>
+                    <div class="stat-label">练习次数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statAvg">--</div>
+                    <div class="stat-label">平均得分</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statBest">--</div>
+                    <div class="stat-label">最高得分</div>
+                </div>
+            </div>
+
+            <!-- Trend tabs -->
+            <div class="trend-tabs" id="trendTabs" style="display:none;">
+                <div class="trend-tab active" onclick="switchRecordView('list')">📋 练习列表</div>
+                <div class="trend-tab" onclick="switchRecordView('trend')">📈 趋势分析</div>
+            </div>
+
+            <!-- Trend chart area -->
+            <div class="trend-chart-area" id="trendArea" style="display:none;">
+                <canvas id="trendCanvas"></canvas>
+                <canvas id="radarCanvas" style="margin-top:16px;"></canvas>
+            </div>
+
+            <div id="recordsList">
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div class="empty-text">暂无练习记录</div>
+                    <div style="font-size:12px;color:var(--text-hint);margin-top:4px;">去「角色扮演」开始你的第一次练习吧</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== BOTTOM TAB BAR ========== -->
+    <nav class="tab-bar">
+        <div class="tab-item active" data-tab="knowledge" onclick="switchTab('knowledge')">
+            <span class="tab-icon">📚</span>
+            <span class="tab-label">知识库</span>
+        </div>
+        <div class="tab-item" data-tab="roleplay" onclick="switchTab('roleplay')">
+            <span class="tab-icon">🎭</span>
+            <span class="tab-label">角色扮演</span>
+        </div>
+        <div class="tab-item" data-tab="records" onclick="switchTab('records')">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">我的记录</span>
+        </div>
+    </nav>
+
+    <!-- ========== LOGIN MODAL ========== -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <h3>👋 欢迎使用伊赫莱拜访训练</h3>
+            <p>请输入你的信息开始练习</p>
+            <input type="text" class="chat-input" placeholder="请输入姓名" id="loginName" style="margin-bottom:10px;width:100%;">
+            <input type="text" class="chat-input" placeholder="请输入工号（可选）" id="loginId" style="margin-bottom:16px;width:100%;">
+            <button class="btn btn-primary btn-block" onclick="doLogin()">开始使用</button>
+        </div>
+    </div>
+
+    <!-- ========== RECORD DETAIL MODAL ========== -->
+    <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+        <div class="detail-panel" id="detailPanel"></div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  伊赫莱知识库数据（14章，数据来源：说明书、INAVO120、企业文件）
+        // ============================================================
+        const KB_DATA = [
+            {
+                id: 'ch1', title: '产品基本档案', icon: '💊', colorClass: 'c1',
+                desc: '通用名、商品名、作用机制、规格、医保状态',
+                html: `
+                    <h3>基本信息</h3>
+                    <table><tr><th>项目</th><th>内容</th></tr>
+                    <tr><td>通用名</td><td>伊那利塞（Inavolisib）</td></tr>
+                    <tr><td>商品名</td><td>伊赫莱® / Itovebi®</td></tr>
+                    <tr><td>研发代号</td><td>GDC-0077</td></tr>
+                    <tr><td>生产厂家</td><td>F. Hoffmann-La Roche</td></tr>
+                    <tr><td>药物类别</td><td>PI3Kα高选择性抑制剂 + 突变体降解剂（第三代）</td></tr>
+                    <tr><td>选择性</td><td>对p110α选择性 >300倍于其他PI3K亚型</td></tr>
+                    <tr><td>剂型规格</td><td>片剂，3mg/片、9mg/片</td></tr>
+                    <tr><td>中国获批</td><td>2025年3月14日（NMPA）</td></tr>
+                    <tr><td>FDA获批</td><td>2024年10月</td></tr>
+                    <tr><td>中国医保</td><td>2025年12月纳入（乙类），协议期2026.1.1-2027.12.31</td></tr>
+                    <tr><td>研发历史</td><td>历经38年，从泛PI3K到高选择性PI3Kα抑制剂</td></tr>
+                    </table>
+                    <blockquote><b>核心定位：</b>中国首个且唯一获批的PI3Kα抑制剂，填补HR+/HER2- PIK3CA突变乳腺癌精准治疗空白。</blockquote>
+                `},
+            {
+                id: 'ch2', title: '作用机制详解', icon: '🔬', colorClass: 'c1',
+                desc: 'PI3Kα双重抑制机制、与竞品的通路位置差异',
+                html: `
+                    <h3>双重作用机制（核心差异化优势）</h3>
+                    <p>伊那利塞是<b>首个兼具PI3Kα选择性抑制和突变体降解双重机制</b>的口服靶向药：</p>
+                    <ol>
+                        <li><b>PI3Kα选择性抑制：</b>高选择性结合PI3Kα催化亚基p110α，阻断PI3K/AKT/mTOR通路异常激活</li>
+                        <li><b>突变体降解：</b>小分子结合后改变突变体结构，暴露泛素化位点 → 被识别降解 → 通路持续抑制且不易耐药</li>
+                    </ol>
+                    <blockquote><b>机制优势：</b>"抑制+降解"双管齐下，卡匹色替和阿培利司仅为抑制剂，不能降解突变蛋白。</blockquote>
+
+                    <h3>与阿培利司的选择性对比</h3>
+                    <p>伊那利塞对PI3Kα催化亚基p110α的选择性较阿培利司<b>提升58倍</b>，更广治疗窗，安全性更优。</p>
+
+                    <h3>PI3K/AKT/mTOR 通路全景</h3>
+                    <table><tr><th>层级</th><th>靶点</th><th>代表药物</th><th>特点</th></tr>
+                    <tr><td><b>源头</b></td><td>PI3Kα</td><td>伊那利塞、阿培利司</td><td>最精准</td></tr>
+                    <tr><td>中游</td><td>AKT</td><td>卡匹色替</td><td>覆盖范围更广</td></tr>
+                    <tr><td>下游</td><td>mTOR</td><td>依维莫司</td><td>非特异性</td></tr></table>
+                    <blockquote><b>关键论点：</b>PIK3CA突变肿瘤可绕过AKT影响糖代谢和血管生成（非AKT依赖途径），提示需要从源头精准直击PIK3CA。敲除AKT无法完全抑制PIK3CA突变肿瘤的增殖。</blockquote>
+                `},
+            {
+                id: 'ch3', title: '关键临床研究数据', icon: '📊', colorClass: 'c2',
+                desc: 'INAVO120研究：PFS 17.2个月、OS 34个月、HR=0.42',
+                html: `
+                    <h3>INAVO120 研究概览</h3>
+                    <table><tr><th>项目</th><th>内容</th></tr>
+                    <tr><td>研究设计</td><td>全球多中心、随机、双盲、安慰剂对照 III期</td></tr>
+                    <tr><td>入组人数</td><td>325例</td></tr>
+                    <tr><td>关键条件</td><td>PIK3CA突变、HR+/HER2-晚期、辅助ET期间/完成后≤12月进展、一线、空腹血糖≤126mg/dL</td></tr>
+                    <tr><td>试验方案</td><td>伊那利塞 9mg QD + 哌柏西利125mg QD + 氟维司群500mg vs 安慰剂三联</td></tr>
+                    <tr><td>中位随访</td><td><b>34.2个月</b>（2025 ASCO最终分析）</td></tr>
+                    <tr><td>发表</td><td>NEJM两次发表（2024.10 + 2025.7）</td></tr></table>
+
+                    <h3>核心疗效数据</h3>
+                    <table><tr><th>指标</th><th>伊那利塞组</th><th>对照组</th><th>差异</th></tr>
+                    <tr><td><b>中位PFS</b></td><td><b>17.2个月</b></td><td>7.3个月</td><td><span class="kb-highlight">延长约10个月</span></td></tr>
+                    <tr><td><b>PFS HR</b></td><td><b>0.42</b> (p&lt;0.0001)</td><td>—</td><td><span class="kb-highlight">降低58%进展风险</span></td></tr>
+                    <tr><td><b>中位OS</b></td><td><b>34个月</b></td><td>27个月</td><td><span class="kb-highlight">延长7个月</span></td></tr>
+                    <tr><td><b>OS HR</b></td><td><b>0.67</b> (p=0.019)</td><td>—</td><td><span class="kb-highlight">降低33%死亡风险</span></td></tr>
+                    <tr><td><b>ORR</b></td><td><b>62.7%</b></td><td>28.0%</td><td>提升约35个百分点</td></tr>
+                    <tr><td><b>CBR</b></td><td><b>75.2%</b></td><td>—</td><td>超双倍获益</td></tr>
+                    <tr><td><b>DoR</b></td><td><b>19.2个月</b></td><td>11.1个月</td><td>延长8.1个月</td></tr>
+                    <tr><td><b>至首次化疗</b></td><td><b>35.6个月</b></td><td>12.6个月</td><td><span class="kb-highlight">推迟化疗近2年</span></td></tr></table>
+
+                    <h3>入组人群特征（极高危）</h3>
+                    <ul>
+                        <li>100%内分泌治疗耐药（~34%原发，~66%继发）</li>
+                        <li>~80%内脏转移，~50%肝转移</li>
+                        <li>~38%亚洲人群，~48%绝经前</li>
+                    </ul>
+                    <blockquote><b>历史意义：</b>INAVO120是<b>首个且唯一</b>取得OS显著获益的PAM通路靶向药物研究。PFS HR=0.42为同类最优。</blockquote>
+                `},
+            {
+                id: 'ch4', title: '安全性数据与AE管理', icon: '🛡️', colorClass: 'c2',
+                desc: '停药率6.8%、≥3级高血糖6.8%、AE恢复率',
+                html: `
+                    <h3>详细AE发生率（INAVO120最终分析）</h3>
+                    <table><tr><th>不良事件</th><th>伊那利塞 任何级别</th><th>伊那利塞 ≥3级</th><th>对照组 ≥3级</th></tr>
+                    <tr><td>中性粒细胞减少</td><td>91.3%</td><td>82.6%</td><td>80.4%</td></tr>
+                    <tr><td><b>高血糖</b></td><td>63.4%</td><td><b>6.8%</b></td><td>0</td></tr>
+                    <tr><td>口腔炎/粘膜炎症</td><td>55.3%</td><td>5.6%</td><td>0</td></tr>
+                    <tr><td>腹泻</td><td>52.2%</td><td>3.7%</td><td>0</td></tr>
+                    <tr><td>血小板减少</td><td>49.7%</td><td>13.7%</td><td>4.9%</td></tr>
+                    <tr><td>贫血</td><td>39.8%</td><td>6.8%</td><td>1.8%</td></tr>
+                    <tr><td>皮疹</td><td>26.7%</td><td><b>0%（无≥3级）</b></td><td>0.6%</td></tr></table>
+
+                    <h3>安全性核心结论</h3>
+                    <table><tr><th>指标</th><th>伊那利塞</th><th>卡匹色替</th><th>阿培利司</th></tr>
+                    <tr><td><b>因AE永久停药</b></td><td><b>6.8%</b></td><td>13.0%</td><td>25%</td></tr>
+                    <tr><td><b>≥3级高血糖</b></td><td><b>6.8%</b></td><td>—</td><td>37%</td></tr></table>
+
+                    <h3>关键AE恢复率</h3>
+                    <table><tr><th>AE</th><th>恢复率</th></tr>
+                    <tr><td>高血糖症</td><td>78.9% (75/95)</td></tr>
+                    <tr><td>腹泻</td><td>87.1% (68/78)</td></tr>
+                    <tr><td>皮疹</td><td>85.4% (35/41)</td></tr>
+                    <tr><td>口腔炎/粘膜炎症</td><td>81.9% (68/83)</td></tr></table>
+                    <blockquote><b>核心卖点：</b>伊那利塞停药率仅6.8%，93%以上患者可持续用药。多数AE为1-2级，皮疹无≥3级。AE中位发生在第1个月内，绝大多数可恢复。</blockquote>
+                `},
+            {
+                id: 'ch5', title: '高血糖管理完整方案', icon: '🩸', colorClass: 'c5',
+                desc: '监测时间表、降糖药物阶梯、剂量调整五级方案',
+                html: `
+                    <h3>高血糖发生机制</h3>
+                    <p>PI3Kα是胰岛素信号通路关键介质。PI3Kα抑制阻断GLUT4定位 → 减少葡萄糖转运。高血糖是PI3Kα抑制的<b>"中靶效应"</b>（on-target effect），与疗效相关——需要管理而非回避。</p>
+
+                    <h3>监测时间表</h3>
+                    <table><tr><th>时间段</th><th>监测频率</th></tr>
+                    <tr><td>第1个月 第1周</td><td><b>每3天</b></td></tr>
+                    <tr><td>第1个月 第2-4周</td><td><b>每周1次</b></td></tr>
+                    <tr><td>第2-3个月</td><td><b>每2周1次</b></td></tr>
+                    <tr><td>第4个月及以后</td><td><b>每4周1次</b></td></tr></table>
+
+                    <h3>降糖药物阶梯</h3>
+                    <table><tr><th>线数</th><th>药物选择</th></tr>
+                    <tr><td><b>一线</b></td><td>二甲双胍（首选）500mg BID起，最大1000mg BID</td></tr>
+                    <tr><td>二线</td><td>SGLT2i、噻唑烷二酮类、α-糖苷酶抑制剂、GLP-1RA、DPP-4i</td></tr>
+                    <tr><td>三线</td><td>格列奈类、磺脲类</td></tr>
+                    <tr><td>末线</td><td>胰岛素（仅最后选择）</td></tr></table>
+
+                    <h3>伊那利塞剂量调整方案</h3>
+                    <table><tr><th>空腹血糖</th><th>干预</th><th>剂量调整</th></tr>
+                    <tr><td>ULN-8.9 mmol/L</td><td>高危者开始口服降糖药</td><td><b>维持9mg</b></td></tr>
+                    <tr><td>&gt;8.9-13.9</td><td>开始/强化降糖药</td><td>暂停→恢复9mg</td></tr>
+                    <tr><td>&gt;13.9-27.8</td><td>停药+强化治疗+补液</td><td>7天内降至&lt;8.9→9mg；超7天→6mg</td></tr>
+                    <tr><td>&gt;27.8</td><td>停药+强化治疗+补液</td><td>先降至6mg；30天内复发→<b>永久停用</b></td></tr></table>
+
+                    <h3>高危患者预防策略</h3>
+                    <p>具有≥1个危险因素（HbA1c≥5.7%、BMI≥30、年龄≥45岁、糖尿病家族史、妊娠期糖尿病史），第1周期第1天开始<b>预防性使用二甲双胍</b>。</p>
+
+                    <h3>INAVO120高血糖特征</h3>
+                    <table><tr><th>指标</th><th>数据</th></tr>
+                    <tr><td>所有级别高血糖</td><td>63.4%</td></tr>
+                    <tr><td>≥3级高血糖</td><td><b>6.8%</b></td></tr>
+                    <tr><td>至首次出现中位时间</td><td><b>7天</b></td></tr>
+                    <tr><td>因高血糖永久停药</td><td><b>0.6%</b>（仅1例）</td></tr>
+                    <tr><td>2级高血糖改善率</td><td><b>96%</b>（中位8天改善）</td></tr></table>
+                `},
+            {
+                id: 'ch6', title: '中国获批适应症与用法用量', icon: '📝', colorClass: 'c2',
+                desc: '说明书原文：适应症、用法用量、禁忌、注意事项',
+                html: `
+                    <h3>适应症（说明书原文）</h3>
+                    <p>联合哌柏西利和氟维司群，适用于：</p>
+                    <blockquote>内分泌治疗耐药（包括在辅助内分泌治疗期间或之后出现复发）、<b>PIK3CA突变</b>、激素受体（HR）阳性、人表皮生长因子受体2（HER2）阴性的<b>局部晚期或转移性乳腺癌</b>成人患者。</blockquote>
+
+                    <h3>用法用量</h3>
+                    <table><tr><th>项目</th><th>详情</th></tr>
+                    <tr><td>起始剂量</td><td>9mg，口服，每日一次</td></tr>
+                    <tr><td>服药方式</td><td>整片吞服，与或不与食物同服均可</td></tr>
+                    <tr><td>哌柏西利</td><td>125mg QD，21天/7天休（28天周期）</td></tr>
+                    <tr><td>氟维司群</td><td>500mg IM，D1/D15，之后每28天D1</td></tr>
+                    <tr><td>绝经前/围绝经期</td><td>加用LHRH激动剂</td></tr>
+                    <tr><td>剂量递减</td><td>9mg → 6mg → 3mg</td></tr>
+                    <tr><td>肾功能损害</td><td>中度（eGFR 30-&lt;60）起始6mg</td></tr>
+                    <tr><td>漏服处理</td><td>＜12h可补服；＞12h跳过，次日正常</td></tr></table>
+
+                    <h3>禁忌</h3>
+                    <p>对伊那利塞或其任何辅料过敏者禁用。</p>
+
+                    <h3>特殊注意事项</h3>
+                    <ol><li>高血糖症：可能发生重度高血糖症</li>
+                    <li>口腔黏膜炎：可能发生重度口腔黏膜炎</li>
+                    <li>腹泻：可能导致脱水和急性肾损伤</li>
+                    <li>胚胎-胎儿毒性：妊娠女性可能对胎儿造成伤害</li></ol>
+                `},
+            {
+                id: 'ch7', title: '竞品对比全景', icon: '⚔️', colorClass: 'c3',
+                desc: 'vs 卡匹色替、阿培利司、依维莫司全方位对比表',
+                html: `
+                    <h3>核心竞品一览</h3>
+                    <table><tr><th>药物</th><th>伊那利塞</th><th>卡匹色替</th><th>阿培利司</th><th>依维莫司</th></tr>
+                    <tr><td>商品名</td><td>伊赫莱®</td><td>荃科得®</td><td>Piqray®</td><td>飞尼妥®</td></tr>
+                    <tr><td>靶点</td><td><b>PI3Kα（高选择性）</b></td><td>AKT1/2/3</td><td>PI3Kα（首代）</td><td>mTOR</td></tr>
+                    <tr><td>厂家</td><td>罗氏</td><td>阿斯利康</td><td>诺华</td><td>诺华</td></tr>
+                    <tr><td>中国获批</td><td>2025.3</td><td>2025.4</td><td>未获批</td><td>已获批</td></tr>
+                    <tr><td>医保</td><td>✅ 2025版</td><td>✅ 2025版</td><td>—</td><td>✅</td></tr>
+                    <tr><td><b>疗法线数</b></td><td><b>一线</b></td><td>二线及以后</td><td>二线及以后</td><td>二线及以后</td></tr>
+                    <tr><td>检测要求</td><td>PIK3CA突变</td><td>PIK3CA/AKT1/PTEN</td><td>PIK3CA突变</td><td>无</td></tr>
+                    <tr><td>联合方案</td><td><b>三联</b>（哌柏+氟维）</td><td>二联（氟维）</td><td>二联（氟维）</td><td>二联（依西）</td></tr>
+                    <tr><td>关键研究</td><td>INAVO120</td><td>CAPItello-291</td><td>SOLAR-1</td><td>BOLERO-2</td></tr>
+                    <tr><td><b>mPFS</b></td><td><b>17.2个月</b></td><td>7.2个月</td><td>11.0个月</td><td>7.8个月</td></tr>
+                    <tr><td><b>PFS HR</b></td><td><b>0.42</b></td><td>0.60（全人群）</td><td>0.65</td><td>0.45</td></tr>
+                    <tr><td><b>mOS</b></td><td><b>34个月 (HR=0.67)</b></td><td>未成熟</td><td>39.3个月</td><td>31.0个月（NS）</td></tr>
+                    <tr><td><b>ORR</b></td><td><b>62.7%</b></td><td>~23-29%</td><td>~36%</td><td>—</td></tr>
+                    <tr><td><b>至化疗时间</b></td><td><b>35.6个月</b></td><td>—</td><td>—</td><td>—</td></tr>
+                    <tr><td>≥3级高血糖</td><td><b>6.8%</b></td><td>—</td><td>37%</td><td>—</td></tr>
+                    <tr><td>因AE停药</td><td><b>6.8%</b></td><td>13.0%</td><td>25%</td><td>—</td></tr></table>
+
+                    <h3>伊那利塞 vs 卡匹色替 深度对比（拜访核心）</h3>
+                    <table><tr><th>维度</th><th>伊那利塞 ✅</th><th>卡匹色替</th></tr>
+                    <tr><td>定位</td><td><b>一线</b></td><td>二线及以后</td></tr>
+                    <tr><td>CDK4/6i经治</td><td>1.9%</td><td>~69%</td></tr>
+                    <tr><td>PFS HR（仅PIK3CA突变）</td><td><b>0.42</b></td><td>0.51</td></tr>
+                    <tr><td>OS数据</td><td><b>34m, HR=0.67 (p=0.019)</b></td><td>尚未成熟</td></tr>
+                    <tr><td>作用机制</td><td><b>抑制 + 突变体降解</b></td><td>仅泛AKT抑制</td></tr>
+                    <tr><td>停药率</td><td><b>6.8%</b></td><td>13.0%</td></tr>
+                    </table>
+                    <blockquote><b>核心话术：</b>"
+                    一线 vs 二线——患者只有一次一线机会"；"HR 0.42 vs 0.51——源头阻断优于中游拦截"；"OS阳性 vs OS未成熟——我们有成熟的生存获益"；"停药率 6.8% vs 13.0%——安全性优势明确"</blockquote>
+                `},
+            {
+                id: 'ch8', title: 'PIK3CA检测指南', icon: '🧬', colorClass: 'c6',
+                desc: '2025中国专家共识、突变率45.6%、检测方法选择',
+                html: `
+                    <h3>检测重要性（2025中国专家共识）</h3>
+                    <ul>
+                        <li>中国HR+/HER2-乳腺癌PIK3CA突变率约 <b>44%-45.6%</b>（显著高于欧美34.8%）</li>
+                        <li>PIK3CA是癌症中突变率第二高的基因（仅次于TP53）</li>
+                        <li>PIK3CA突变是内分泌治疗耐药的重要原因</li>
+                        <li>伊那利塞用药<b>必要条件</b>：确认存在PIK3CA突变</li>
+                    </ul>
+
+                    <h3>突变位点分布（中国人群）</h3>
+                    <table><tr><th>特征</th><th>数据</th></tr>
+                    <tr><td>3个热点突变（H1047R/E545K/E542K）</td><td>占总突变的 <b>72.1%</b></td></tr>
+                    <tr><td>罕见突变</td><td>27.87%</td></tr>
+                    <tr><td>多位点突变（双突变为主）</td><td>占PIK3CA突变患者 <b>12%-15%</b></td></tr></table>
+                    <blockquote><b>双突变重要性：</b>双突变导致PI3K活性增加、对PI3Kα抑制剂敏感性增强。单位点 vs 多位点突变：PR+SD率 72.7% vs 100%。推荐<b>尽可能全面检测</b>。</blockquote>
+
+                    <h3>检测方法选择</h3>
+                    <table><tr><th>维度</th><th>NGS（推荐首选）</th><th>PCR</th></tr>
+                    <tr><td>检测范围</td><td>全面覆盖已知+未知突变</td><td>仅已知热点</td></tr>
+                    <tr><td>漏检风险</td><td>低</td><td>约20%的PIK3CA突变和95%的双突变可能漏检</td></tr>
+                    <tr><td>适用</td><td>精准医疗</td><td>条件受限时</td></tr></table>
+
+                    <h3>检测可及性</h3>
+                    <p>NMPA已批准<b>近20种</b>IVD试剂盒（PCR：雅康博、友芝友、艾德等；NGS：诺禾致源、燃石、泛生子、世和等）。PQCC/NCCL每年组织室间质控。</p>
+
+                    <h3>推广话术</h3>
+                    <ul>
+                        <li>"中国PIK3CA突变率高达45.6%，近一半HR+晚期患者可从伊赫莱获益"</li>
+                        <li>"ESMO将PIK3CA列为乳腺癌<b>IA等级</b>靶点"</li>
+                        <li>"NGS一次检测覆盖多个靶点，后续用药决策都能受益"</li>
+                    </ul>
+                `},
+            {
+                id: 'ch9', title: '指南推荐汇总', icon: '📋', colorClass: 'c4',
+                desc: 'NCCN一级、ESMO一级A类、CSCO二级、CBCS推荐',
+                html: `
+                    <h3>权威指南推荐</h3>
+                    <table><tr><th>指南</th><th>推荐级别</th><th>时间</th></tr>
+                    <tr><td><b>NCCN乳腺癌临床实践指南</b></td><td><b>一级推荐</b></td><td>2025 V4</td></tr>
+                    <tr><td><b>ESMO转移性乳腺癌指南</b></td><td><b>一级，A类</b></td><td>2025 v1.2</td></tr>
+                    <tr><td><b>CSCO乳腺癌诊疗指南</b></td><td><b>二级推荐</b>（TAM/NSAI/SAI失败）</td><td>2025</td></tr>
+                    <tr><td><b>CBCS乳腺癌诊治指南与规范</b></td><td>推荐</td><td>2025</td></tr></table>
+                    <blockquote><b>拜访话术：</b>"中美欧三大权威指南一致推荐——NCCN一级、ESMO一级A类、CSCO/CBCS推荐。伊赫莱是有指南背书的精准治疗。"</blockquote>
+                `},
+            {
+                id: 'ch10', title: '医保与费用', icon: '💳', colorClass: 'c4',
+                desc: '2025医保目录乙类、月自付约2,500-3,000元',
+                html: `
+                    <h3>医保情况</h3>
+                    <table><tr><th>项目</th><th>详情</th></tr>
+                    <tr><td>医保目录</td><td>2025版国家医保目录（乙类）</td></tr>
+                    <tr><td>纳入时间</td><td>2025年12月</td></tr>
+                    <tr><td>执行时间</td><td>2026年1月1日</td></tr>
+                    <tr><td>协议期</td><td>2026.1.1 - 2027.12.31</td></tr>
+                    <tr><td>限制条件</td><td>限适应症范围内使用</td></tr></table>
+
+                    <h3>费用参考</h3>
+                    <table><tr><th>项目</th><th>金额</th></tr>
+                    <tr><td>医保谈判后月治疗费用</td><td>约 8,600元/月（报销前）</td></tr>
+                    <tr><td>职工医保报销后自付</td><td>约 <b>2,500-3,000元/月</b></td></tr>
+                    <tr><td>年自付费用</td><td>约 3万元左右</td></tr></table>
+                    <blockquote>⚠️ 具体报销比例因地区、医院等级、医保类型而异。异地就医报销比例偏低。以上海职工医保约70-80%为例估算。</blockquote>
+                `},
+            {
+                id: 'ch11', title: '核心推广要点', icon: '🎯', colorClass: 'c5',
+                desc: '一句话核心信息、五大推广要点、竞品区隔话术',
+                html: `
+                    <h3>一句话核心信息</h3>
+                    <blockquote><b>伊赫莱——首个靶向PIK3CA突变的一线三联方案，PFS超双倍至17.2个月（HR=0.42），首个PAM通路OS阳性药物（34 vs 27个月），停药率仅6.8%，将化疗推迟近2年。</b></blockquote>
+
+                    <h3>五大推广要点</h3>
+                    <ol>
+                        <li><b>精准靶向，机制领先：</b>PI3Kα高选择性（>300倍）+ 突变体降解双重机制</li>
+                        <li><b>一线超双倍PFS：</b>17.2 vs 7.3个月，HR=0.42，ORR 62.7%</li>
+                        <li><b>首个OS阳性PAM通路药物：</b>34 vs 27个月，HR=0.67，p=0.019</li>
+                        <li><b>安全可控：</b>≥3级高血糖仅6.8%，停药率6.8%，皮疹无≥3级</li>
+                        <li><b>医保可及，指南推荐：</b>月自付约2,500-3,000元，中美欧指南一致推荐</li>
+                    </ol>
+
+                    <h3>竞品区隔关键话术（拜访口袋卡）</h3>
+                    <h4>vs 卡匹色替：</h4>
+                    <ul>
+                        <li>"一线 vs 二线——患者只有一次一线机会"</li>
+                        <li>"HR 0.42 vs 0.51——源头阻断优于中游拦截"</li>
+                        <li>"OS阳性 vs OS未成熟——我们有成熟的生存获益"</li>
+                        <li>"停药率 6.8% vs 13.0%——安全性优势明确"</li>
+                    </ul>
+                    <h4>vs 阿培利司：</h4>
+                    <ul>
+                        <li>"≥3级高血糖 6.8% vs 37%——安全性代际差异"</li>
+                        <li>"58倍选择性提升 + 突变体降解——第三代机制优势"</li>
+                    </ul>
+                `},
+            {
+                id: 'ch12', title: '异议处理话术', icon: '💬', colorClass: 'c5',
+                desc: '8种常见异议标准应答（竞品、检测率、不良反应、费用等）',
+                html: `
+                    <h3>1. "卡匹色替也很好，为什么要换？"</h3>
+                    <p>卡匹色替确实是个好药，但它的定位在<b>二线</b>——患者只有一次一线治疗的机会。INAVO120入组的就是高危内分泌耐药患者，PFS从7.3延长到17.2个月，是真正的<b>超双倍获益</b>。而且伊赫莱是首个PAM通路OS阳性药物，34 vs 27个月。一线用好了，后面的路才更宽。</p>
+
+                    <h3>2. "PIK3CA检测率太低，这个药用不起来"</h3>
+                    <p>正因为有了好药，检测才有价值。中国PIK3CA突变率高达45.6%，比欧美还高10个百分点——这意味着近一半的患者可能从精准治疗中获益。而且NGS一次检测覆盖几十个靶点，后续用药决策都能受益。ESMO已经把PIK3CA列为乳腺癌IA等级靶点，检测是大势所趋。</p>
+
+                    <h3>3. "不良反应太多，患者受不了"</h3>
+                    <p>INAVO120数据显示，伊赫莱的停药率只有<b>6.8%</b>——93%以上的患者可以持续用药。最关键的高血糖我们有完整的五级管理方案：基线测血糖和HbA1c，第一周每3天监测一次，高危患者可以预防性使用二甲双胍，96%的2级高血糖患者8天内就能改善。≥3级高血糖只有6.8%，阿培利司是37%。</p>
+
+                    <h3>4. "医保后患者还是觉得贵"</h3>
+                    <p>一个月自付大概2,500-3,000元，一年3万左右。但不用伊赫莱，患者平均7.3个月就进展了，之后化疗的费用、住院的费用，算下来不一定省钱。更重要的是，伊赫莱让患者PFS延长到17.2个月，推迟化疗近2年——这是将近一年半不用打化疗的好时光。</p>
+
+                    <h3>5. "换药风险太大"</h3>
+                    <p>INAVO120入组的就是内分泌治疗耐药的"稳定患者"，对照组中位PFS只有7.3个月——不需要等进展了再手忙脚乱。三联方案中哌柏西利和氟维司群本身就是成熟的标准治疗，加上伊赫莱是"做加法"而不是"换赛道"。</p>
+
+                    <h3>6. "OS只多了7个月，意义大吗？"</h3>
+                    <p>这个人群的中位OS只有27个月，7个月相当于延长了<b>26%的总生存时间</b>。而且这是在超过50%肝转移的高危人群中得到的结果。伊赫莱是<b>目前唯一</b>取得OS阳性结果的PAM通路靶向药。</p>
+
+                    <h3>7. "伊赫莱耐药了怎么办？"</h3>
+                    <p>伊赫莱将化疗推迟了23个月（35.6 vs 12.6个月）。耐药后策略很灵活：化疗、AKT抑制剂（卡匹色替）、ADC药物、或根据新基因检测选择其他靶向方案。</p>
+
+                    <h3>8. "卡匹色替检测覆盖更广，不是更好吗？"</h3>
+                    <p>检测覆盖广不等于疗效更好。在PIK3CA突变亚组中伊赫莱HR=0.42，优于卡匹色替的0.51。乳腺癌PAM通路突变以PIK3CA为主（35%），AKT1突变仅3.5%。覆盖广但不精准，不如选对靶点。</p>
+                `},
+            {
+                id: 'ch13', title: '医院准入与药学要点', icon: '🏥', colorClass: 'c4',
+                desc: '药事会关键论据、常见问题应对、双通道策略',
+                html: `
+                    <h3>伊赫莱药学特征</h3>
+                    <table><tr><th>项目</th><th>特征</th></tr>
+                    <tr><td>剂型</td><td>口服片剂（3mg/9mg）</td></tr>
+                    <tr><td>服药频率</td><td>每日一次</td></tr>
+                    <tr><td>与食物关系</td><td>与或不与食物同服均可</td></tr>
+                    <tr><td>疗程</td><td>持续至疾病进展或不可接受毒性</td></tr></table>
+
+                    <h3>药事会关键论据（一页纸核心）</h3>
+                    <ol>
+                        <li><b>创新性：</b>中国首个且唯一PI3Kα抑制剂，填补治疗空白</li>
+                        <li><b>临床价值：</b>PFS超双倍（17.2 vs 7.3m），OS显著获益（34 vs 27m），NEJM两次发表</li>
+                        <li><b>指南支持：</b>NCCN一级、ESMO一级A类、CSCO、CBCS推荐</li>
+                        <li><b>安全可控：</b>停药率仅6.8%，有成熟血糖管理方案，可门诊管理</li>
+                        <li><b>药物经济学：</b>口服每日一次，减少输液资源占用；推迟化疗23个月</li>
+                        <li><b>社会需求：</b>中国PIK3CA突变率高达45.6%，患者基数大</li>
+                    </ol>
+
+                    <h3>双通道/单独支付申请理由</h3>
+                    <ol>
+                        <li>填补临床空白：中国首个且唯一乳腺癌PI3Kα抑制剂</li>
+                        <li>卓越临床价值：PFS超双倍，OS显著获益，首个PAM通路OS阳性药物</li>
+                        <li>权威指南推荐：中美欧四大指南一致推荐</li>
+                        <li>口服便捷：每日一次口服，减少住院和输液资源</li>
+                        <li>社会经济价值：减少进展患者，降低后续治疗费用</li>
+                    </ol>
+
+                    <h3>药事会常见问题应对</h3>
+                    <p><b>Q: 医保基金压力？</b><br>A: 通过国家谈判已纳入医保，价格已在国家级层面评估合理性。口服剂型减少住院和输液费用，延迟化疗进一步节省医疗资源。</p>
+                    <p><b>Q: 是否需要特殊管理？</b><br>A: 口服给药，门诊即可管理，无需住院。需要基线血糖和HbA1c检测，定期监测空腹血糖。大多数AE为1-2级，可逆可控。</p>
+                `},
+            {
+                id: 'ch14', title: '患者画像与典型病例', icon: '👤', colorClass: 'c6',
+                desc: '理想患者画像、三种典型病例场景、在研研究',
+                html: `
+                    <h3>理想患者画像</h3>
+                    <ul>
+                        <li>HR+/HER2- 局部晚期或转移性乳腺癌</li>
+                        <li><b>PIK3CA突变阳性</b>（NGS/PCR检测）</li>
+                        <li>内分泌治疗耐药（辅助ET期间或12个月内进展）</li>
+                        <li>既往未接受转移性疾病系统治疗（一线）</li>
+                        <li>ECOG PS 0-1</li>
+                        <li>空腹血糖 ≤126 mg/dL，HbA1c<6.0%</li>
+                        <li>有肝转移等高危因素（亚组获益一致）</li>
+                    </ul>
+
+                    <h3>典型病例场景</h3>
+                    <p><b>场景一：辅助内分泌治疗期间快速进展</b><br>52岁女性，HR+/HER2-术后，辅助来曲唑10个月发现肝转移。NGS检测PIK3CA E545K突变阳性 → <b>伊赫莱一线三联方案</b></p>
+                    <p><b>场景二：完成辅助内分泌后短期内复发</b><br>48岁女性，5年他莫昔芬后8个月，骨转移+肺转移。PIK3CA H1047R突变阳性 → <b>伊赫莱一线三联方案</b></p>
+                    <p><b>场景三：年轻高危双突变患者</b><br>38岁女性，绝经前，辅助OFS+来曲唑14个月，多发肝转移。ctDNA检测PIK3CA双突变（H1047R + E545K） → <b>伊赫莱一线 + LHRH激动剂</b></p>
+
+                    <h3>在研研究</h3>
+                    <table><tr><th>研究</th><th>阶段</th><th>方案</th><th>目标人群</th></tr>
+                    <tr><td>INAVO120</td><td>III期（已获批）</td><td>伊那利塞+哌柏+氟维</td><td>一线</td></tr>
+                    <tr><td>INAVO121</td><td>III期</td><td>伊那利塞+氟维</td><td>二线/后线</td></tr>
+                    <tr><td>INAVO122</td><td>III期</td><td>伊那利塞+其他联合</td><td>探索中</td></tr></table>
+                `}
+        ];
+
+        // ========== APP STATE ==========
+        // API_BASE: auto-detect from current page URL
+        const API_BASE = (() => {
+            const u = window.location.href;
+            if (u.startsWith('http')) return u.substring(0, u.lastIndexOf('/'));
+            return ''; // local file, no backend
+        })();
+
+        // AI_KEY: client-side DeepSeek key (for direct calls when no backend)
+        // Priority: localStorage > hardcoded default
+        let AI_KEY = localStorage.getItem('ihl_ai_key') || '';
+
+        const APP = {
+            user: { name: '', id: '' },
+            rolePlay: {
+                roleType: null,
+                attitude: null,
+                scenarios: [],
+                messages: [],
+                active: false
+            },
+            records: [],
+            recordView: 'list',
+            voice: { ttsEnabled: false }
+        };
+
+        // ========== INIT ==========
+        function init() {
+            // Load user
+            const savedUser = localStorage.getItem('ihl_user');
+            if (savedUser) {
+                APP.user = JSON.parse(savedUser);
+                document.getElementById('userName').textContent = APP.user.name;
+            } else {
+                document.getElementById('loginModal').classList.add('show');
+            }
+
+            // Load records
+            const savedRecords = localStorage.getItem('ihl_records');
+            if (savedRecords) {
+                APP.records = JSON.parse(savedRecords);
+            }
+
+            // Setup tag clicks
+            setupTagGroups();
+            setupScenarios();
+            updateRecordsView();
+            renderKBChapterList();
+
+            // Sync pending records to server
+            syncPendingRecords();
+        }
+
+        // ========== LOGIN ==========
+        function doLogin() {
+            const name = document.getElementById('loginName').value.trim();
+            const id = document.getElementById('loginId').value.trim();
+            if (!name) { alert('请输入姓名'); return; }
+            APP.user = { name, id: id || ('IH' + Date.now().toString(36).toUpperCase()) };
+            localStorage.setItem('ihl_user', JSON.stringify(APP.user));
+            document.getElementById('userName').textContent = APP.user.name;
+            document.getElementById('loginModal').classList.remove('show');
+        }
+
+        // ========== TAB SWITCH ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.querySelector(`.tab-item[data-tab="${tabName}"]`).classList.add('active');
+
+            if (tabName === 'records') updateRecordsView();
+        }
+
+        // ========== TAG GROUPS ==========
+        function setupTagGroups() {
+            document.querySelectorAll('.tag-group').forEach(group => {
+                group.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('tag')) return;
+                    const isRoleGroup = group.id === 'roleTypeGroup';
+                    const isAttitudeGroup = group.id === 'attitudeGroup';
+
+                    // Single select for role and attitude groups
+                    if (isRoleGroup || isAttitudeGroup) {
+                        group.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        if (isRoleGroup) APP.rolePlay.roleType = e.target.dataset.value;
+                        if (isAttitudeGroup) APP.rolePlay.attitude = e.target.dataset.value;
+                    }
+                });
+            });
+        }
+
+        // ========== SCENARIOS ==========
+        function setupScenarios() {
+            document.getElementById('scenarioGroup').addEventListener('click', (e) => {
+                const item = e.target.closest('.scenario-item');
+                if (!item) return;
+                item.classList.toggle('selected');
+                APP.rolePlay.scenarios = Array.from(
+                    document.querySelectorAll('#scenarioGroup .scenario-item.selected')
+                ).map(el => el.dataset.value);
+            });
+        }
+
+        // ========== ROLE PLAY ==========
+        function startRolePlay() {
+            if (!APP.rolePlay.roleType) { alert('请先选择医生角色类型'); return; }
+            if (!APP.rolePlay.attitude) { alert('请先选择态度类型'); return; }
+            if (APP.rolePlay.scenarios.length === 0) { alert('请至少选择一个挑战场景'); return; }
+
+            APP.rolePlay.active = true;
+            APP.rolePlay.messages = [];
+
+            // Update chat header
+            const attitudeLabels = { '支持': '支持型', '反对': '反对型', '中立': '中立型', '忙碌': '忙碌型' };
+            const roleLabels = { '主任': '科室主任', '带组': '带组医生', '主治': '主治医师', '住院': '住院医师' };
+            document.getElementById('chatRoleName').textContent =
+                roleLabels[APP.rolePlay.roleType] + ' · ' + attitudeLabels[APP.rolePlay.attitude];
+            const sceneText = '场景：' + APP.rolePlay.scenarios.join('、');
+            const sceneEl = document.getElementById('chatRoleSceneText');
+            if (sceneEl) sceneEl.textContent = sceneText;
+            else document.getElementById('chatRoleScene').textContent = sceneText;
+
+            // AI status badge
+            const badge = document.getElementById('aiStatusBadge');
+            if (badge) {
+                if (API_BASE) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = '⚡ AI智能';
+                    badge.style.background = '#e8f5e9';
+                    badge.style.color = '#2e7d32';
+                } else {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = '📋 规则模式';
+                    badge.style.background = '#fff3e0';
+                    badge.style.color = '#e65100';
+                }
+            }
+
+            // Switch views
+            document.getElementById('rp-config').style.display = 'none';
+            document.getElementById('rp-chat').style.display = 'block';
+            document.getElementById('rp-score').style.display = 'none';
+
+            // Add doctor's opening
+            addMessage('doctor', generateDoctorOpening());
+            document.getElementById('chatInput').focus();
+        }
+
+        function generateDoctorOpening() {
+            const openings = {
+                '主任_支持': '伊赫莱进医保确实是好事，我们科室HR+/HER2-的PIK3CA突变患者有新的选择了。INAVO120的PFS 17.2个月，ORR 62.7%，跟卡匹色替比到底优势在哪里？',
+                '主任_反对': '我们科室目前主要用卡匹色替，INAVO120的数据我看过——PFS是不错，但你们的OS HR 0.67、p=0.019才刚成熟。卡匹色替全人群获批，你们必须检测PIK3CA，临床落地没那么简单。',
+                '主任_中立': '伊那利塞我知道进医保了，但具体什么样的患者最适合用？你给我简单说说关键数据。',
+                '主任_忙碌': '我马上要去会诊，给你3分钟，简单说说伊赫莱最大的优势是什么？挑最核心的说。',
+                '带组_支持': '上次主任提过伊赫莱，我看了下数据——PFS HR 0.42确实漂亮，而且停药率只有6.8%。你帮我梳理一下怎么跟患者解释换药这件事？',
+                '带组_反对': '我对PI3K抑制剂印象一般，阿培利司之前高血糖问题太多了（≥3级37%），你们的伊那利塞不良反应怎么样？数据经得起推敲吗？',
+                '带组_中立': '听说过这个药，但我们现在用依维莫司或卡匹色替的患者也挺稳定的，为什么要换？你给个有说服力的理由。',
+                '带组_忙碌': '今天门诊特别忙，挑重点说。PIK3CA突变的HR+/HER2-患者，伊赫莱能给他们带来什么？数据要精准。',
+                '主治_支持': '我手上有个PIK3CA E545K突变的患者，内分泌治疗后刚进展，如果现在上伊赫莱三联，PFS能延长多久？安全性怎么样？',
+                '主治_反对': 'PIK3CA检测率本来就不高——我们科室大概只有一半的患者会做。你这个药必须检测才能用，市场能有多大？',
+                '主治_中立': '新药进医保是好事，但患者自付部分还是不小。你能帮我算算一个月大概多少钱？异地报销比例更低怎么办？',
+                '主治_忙碌': '你说吧，不过我等下要去查房，长话短说。关键数据和竞争优势一起说完。',
+                '住院_支持': '老师让我了解一下伊赫莱，你能讲讲作用机制吗？为什么说是"抑制+降解"？跟阿培利司有什么代际差异？',
+                '住院_反对': '看了NEJM的INAVO120，PFS虽然显著，但我觉得这个研究排除了很多真实世界的复杂患者。你怎么看？',
+                '住院_中立': '新药太多了——卡匹色替、伊赫莱、阿培利司、依维莫司，到底怎么选？伊赫莱的定位到底在一线还是二线？',
+                '住院_忙碌': '我在写病历，你说我听着。有不懂的我问。',
+            };
+
+            const key = APP.rolePlay.roleType + '_' + APP.rolePlay.attitude;
+            return openings[key] || '你好，伊赫莱我了解一些，你有什么想跟我讨论的？';
+        }
+
+        // ========== CONVERSATION ENGINE ==========
+        function analyzeRepMessage(text) {
+            // Detect what topics the rep is addressing
+            const topics = [];
+            const kw = text.toLowerCase();
+            if (/pfs|无进展|生存|mPFS|15.*月|7.*月|HR.*0\.[0-9]|INAVO|临床数据|研究/.test(kw)) topics.push('data');
+            if (/医保|报销|自付|费用|价格|多少钱|负担|纳入/.test(kw)) topics.push('insurance');
+            if (/卡匹|capivasertib|capitello|AKT|竞品|对比|阿培|依维|区别/.test(kw)) topics.push('competitor');
+            if (/不良|副作|高血糖|皮疹|腹泻|安全|耐受/.test(kw)) topics.push('safety');
+            if (/机制|PI3K|通路|靶点|突变|PIK3CA|基因/.test(kw)) topics.push('mechanism');
+            if (/患者|病例|病人|典型|案例|换药|切换/.test(kw)) topics.push('patient');
+            if (/联合|氟维司群|哌柏|palbo|CDK|内分泌/.test(kw)) topics.push('combination');
+            if (/耐药|进展|后续|二线|后线/.test(kw)) topics.push('resistance');
+            if (/指南|CSCO|NCCN|推荐|一线|二线|定位/.test(kw)) topics.push('guideline');
+            if (!topics.length) topics.push('general');
+            return topics;
+        }
+
+        function generateDoctorReply(repText, roundNum) {
+            const topics = analyzeRepMessage(repText);
+            const attitude = APP.rolePlay.attitude;
+            const roleType = APP.rolePlay.roleType;
+
+            // Determine reply type based on round and attitude
+            // Early rounds: more open, later rounds: more pushback or wrap-up
+            let replyPool = [];
+
+            // -- TYPE 1: ACKNOWLEDGE + ADD (认可+补充) --
+            const acknowledgements = {
+                data: [
+                    'INAVO120的mPFS 17.2个月确实是个亮点，HR 0.42意味着风险降低了58%，这个数据在乳腺癌内分泌治疗里程碑里就算很扎实的了。',
+                    'PFS从7.3到17.2个月，ORR 62.7%，这个数据确实漂亮。更重要的是OS也看到显著获益，34 vs 27个月，HR=0.67 —— PAM通路里第一个做出OS的。',
+                    '你说得对，INAVO120是针对PIK3CA突变人群专门设计的，325例里38%亚洲人群，中国数据有代表性。',
+                ],
+                competitor: [
+                    '确实，卡匹色替是AKT抑制剂，通路位置上在PI3K下游，理论上覆盖范围更广，但特异性上你们有优势。',
+                    '你提到CAPItello-291是全人群入组这一点很重要，你们的INAVO120是针对PIK3CA突变人群，数据针对性更强。',
+                    '阿培利司的高血糖问题确实让很多医生头大，如果伊赫莱这方面有改善，确实是个差异化优势。',
+                ],
+                safety: [
+                    '如果高血糖发生率6.8%（≥3级）确实比阿培利司的37%改善很大，停药率也只有6.8%——93%以上患者能持续用药，这个数据我会记住。',
+                    '3-4级AE比例如果能控制在可接受范围，而且大多数1-2级能恢复，患者依从性会好很多。你们有高血糖管理SOP吗？',
+                ],
+                mechanism: [
+                    'PI3Kα高选择性（>300倍于其他亚型）加上突变体降解双重机制，确实比单纯的抑制更有说服力。',
+                    '中国PIK3CA突变率45.6%，比欧美还高10个百分点，这个人群确实不容忽视。精准治疗是趋势。',
+                ],
+                insurance: [
+                    '进医保后患者自付能降到这个水平的话，确实比之前预想的要好。',
+                    '医保准入对患者可及性确实是关键一步。',
+                ],
+                general: [
+                    '嗯，这个角度我之前确实没太想到。',
+                    '说得挺实在的，不是那种纯推销的感觉。',
+                    '行，这一点我认可，你说得在理。',
+                ]
+            };
+
+            // -- TYPE 2: SHARE EXPERIENCE (分享临床经验) --
+            const experiences = {
+                data: [
+                    '说到数据，我手上有个类似的病人，PIK3CA突变确诊时已经晚期了，当时用氟维司群单药大概8个月就进展了，如果当时有这个药可能结果会不一样。',
+                    '我其实对PFS数据关注比较多，但更关心OS趋势。毕竟患者最终要的还是活得长，不仅仅是进展晚。',
+                    '我们科室之前参加过一个多中心研究，PIK3CA突变的患者内分泌治疗确实容易耐药，这个通路要是能阻断住，价值很大。',
+                ],
+                competitor: [
+                    '说实话卡匹色替我们用得也不算多，去年大概开了五六例，主要是当时你们还没进医保。进医保之后格局肯定会有变化。',
+                    '我有个患者用了卡匹色替之后腹泻比较重，被迫减量了。如果你们这方面好一些，我确实愿意尝试。',
+                    'AKT抑制剂和PI3Kα抑制剂一个是广谱一个是精准，我觉得两者不一定是非此即彼，可能不同患者适合不同方案。',
+                ],
+                safety: [
+                    '不良反应管理其实是临床落地的关键。我之前用依维莫司的时候口腔炎就挺头疼的，如果你们能做好患者教育，我会更放心。',
+                    '说实话，PI3K通路药物的代谢副作用我们是有预期的，关键是能不能管理住。你们有没有具体的监测和管理方案？',
+                ],
+                insurance: [
+                    '医保确实是大问题。我有个患者之前想用靶向药，一算自付要两三千一个月，直接放弃了。现在进医保了情况应该好很多。',
+                    '我们科室有些外地患者，异地就医报销比例更低。你帮我算算，最差的情况下患者大概自付多少？',
+                ],
+                patient: [
+                    '换药这件事，说实话最难的不是我们医生决定，是患者不愿意换。特别是那些用了很久方案终于稳定下来的患者，你跟她说换药，她第一反应就是抗拒。',
+                    '我遇到过最典型的情况就是——患者觉得现在方案虽然效果不是最好，但至少没进展，"不动就是安全的"。这种心理你打算怎么帮我说服患者？',
+                ],
+                general: [
+                    '我在临床上最大的感触就是——新药越来越多是好事，但选择也变复杂了。你得帮我把定位搞清楚。',
+                    '坦白说，我们科现在PIK3CA检测率确实不高，大概只有一半的患者会做。如果检测率上不去，再好的药也用不起来。',
+                ]
+            };
+
+            // -- TYPE 3: PARTIAL AGREEMENT + CONCERN (部分赞同+提出顾虑) --
+            const concerns = {
+                data: [
+                    '数据是好数据——PFS 17.2个月、HR 0.42。但我关心的是：INAVO120亚洲人群38%，中国亚组的数据单独拉出来够不够支撑我放心用？',
+                    'PFS延长是好事，但HR 0.67的OS获益绝对数值只多了7个月，怎么理解这个临床意义？',
+                ],
+                competitor: [
+                    '卡匹色替的优势在于全人群获批，不需要检测PIK3CA。你们必须检测，对检测率是考验。中国检测率目前大概只有50%。',
+                    '你说HR 0.42 vs 卡匹色替的0.51有差异，但CAPItello-291是总人群，你们INAVO120是精选PIK3CA突变人群——不太公平的对比吧？',
+                ],
+                safety: [
+                    '高血糖的问题你说改善了一些，但INAVO120里高血糖发生率大概多少？3-4级的比例呢？我得心里有数。',
+                    '除了高血糖，皮疹和腹泻呢？这些虽然不致命但很影响生活质量。',
+                ],
+                insurance: [
+                    '进医保是好事，但我听说医保有适应症限制？是所有HR+/HER2-都能报，还是必须二线之后？你帮我确认一下。',
+                ],
+                combination: [
+                    '联合方案确实有优势，但患者依从性也是个问题。一次吃三种药，患者的耐受性和依从性你跟了吗？',
+                ],
+                general: [
+                    '你说得没错，但我还有几个实际问题想确认。',
+                ]
+            };
+
+            // -- TYPE 4: PUSH BACK (反驳/挑战，反对型更多触发) --
+            const pushbacks = {
+                competitor: [
+                    '你说的我都理解，但换个角度——CAPItello-291毕竟入组了708例，INAVO120只有325例。而且你们入组的是"刚耐药"的精选人群，真实世界患者可能已经用过多种方案了。',
+                    '我不觉得PFS差几个月就一定要选谁。卡匹色替的安全性数据已经积累了很多年，我们用了这么久心里有底。你让我换一个刚上市一年的药，风险谁来担？',
+                ],
+                data: [
+                    '注册研究的患者情况跟真实世界差很多。研究里患者ECOG 0-1、血糖正常、没有严重合并症——现实中很多患者身体状态没那么好，疗效还能17.2个月吗？',
+                ],
+                general: [
+                    '说实话你说的这些我都有所了解，但让我改变处方习惯需要一个更强的理由。数据是一方面，临床信心的建立需要时间和更多经验。',
+                ]
+            };
+
+            // -- TYPE 5: THINKING OUT LOUD (自言自语式，体现医生在消化信息) --
+            const musings = [
+                '嗯……你这么一说，我倒是想起了上周门诊的一个患者。PIK3CA突变阳性，目前内分泌治疗刚进展，如果当时有这个选择，确实可以跟病人讨论一下。',
+                '让我想想……如果从全程管理的角度来看，把伊赫莱放在一线联合，也许确实能给后续留出更多空间。',
+                '有意思，我之前一直把它定位在二线，但你这么一说，一线的数据确实也站得住。',
+                '说实话我之前对PI3Kα抑制剂的印象还停留在阿培利司时代，如果新一代确实安全性更好，那确实值得重新评估。',
+            ];
+
+            // -- TYPE 6: WRAP-UP / SUMMARY (收尾总结) --
+            const wrapups = [
+                '好了，今天聊了挺多。总结一下——INAVO120数据确实有说服力（PFS 17.2个月、HR 0.42、OS获益），医保准入后费用也解决了可及性问题。我接下来会在我合适的PIK3CA突变病人身上考虑试用，有具体问题我再找你。',
+                '行，今天先聊到这里。你的几个点我记得：PFS超双倍获益、安全性优于上一代（6.8%停药率）、医保后月自付约2500。我会跟组里的同事讨论一下，有需要再联系你。',
+                '谢谢你今天过来。我坦诚地说——我之前对伊赫莱确实不够了解，今天聊完觉得至少在PIK3CA突变这个人群里，它是一个值得认真考虑的一线选择。下次MDT我提一下。',
+            ];
+
+            // Determine reply strategy based on round, attitude, and topics
+            const totalRounds = APP.rolePlay.messages.filter(m => m.role === 'rep').length + 1;
+
+            let pool = [];
+
+            if (totalRounds <= 2) {
+                // Early rounds: mostly acknowledge + experience, fewer questions
+                pool = [...pickFrom(acknowledgements, topics, 2), ...pickFrom(experiences, topics, 2), ...pickFrom(concerns, topics, 1)];
+            } else if (totalRounds <= 5) {
+                // Middle rounds: mix of experience, concerns, musings
+                if (attitude === '反对') {
+                    pool = [...pickFrom(pushbacks, topics, 2), ...pickFrom(concerns, topics, 2), ...pickFrom(experiences, topics, 1)];
+                } else if (attitude === '支持') {
+                    pool = [...pickFrom(acknowledgements, topics, 2), ...pickFrom(experiences, topics, 2), musings.slice(0, 1)];
+                } else {
+                    pool = [...pickFrom(experiences, topics, 2), ...pickFrom(concerns, topics, 1), ...pickFrom(acknowledgements, topics, 1), musings.slice(0, 1)];
+                }
+            } else {
+                // Later rounds: move toward wrap-up
+                if (attitude === '反对') {
+                    pool = [...pickFrom(concerns, topics, 2), ...pickFrom(pushbacks, topics, 1), ...wrapups.slice(0, 1)];
+                } else {
+                    pool = [...pickFrom(acknowledgements, topics, 1), ...musings.slice(0, 1), ...wrapups.slice(0, 1)];
+                }
+            }
+
+            // Fallback
+            if (pool.length === 0) {
+                pool = [...pickFrom(experiences, ['general'], 2), ...musings.slice(0, 1)];
+            }
+
+            // Filter out already-used responses to avoid repetition
+            const usedReplies = new Set(APP.rolePlay.usedReplies || []);
+            pool = pool.filter(r => !usedReplies.has(r));
+            if (pool.length === 0) pool = musings;
+            const reply = pool[Math.floor(Math.random() * pool.length)];
+
+            if (!APP.rolePlay.usedReplies) APP.rolePlay.usedReplies = [];
+            APP.rolePlay.usedReplies.push(reply);
+
+            return reply;
+        }
+
+        function pickFrom(source, topics, count) {
+            // Pick replies matching the given topics
+            let candidates = [];
+            topics.forEach(t => {
+                if (source[t]) candidates = candidates.concat(source[t]);
+            });
+            // Shuffle and pick
+            candidates.sort(() => Math.random() - 0.5);
+            return candidates.slice(0, count);
+        }
+
+        // ========== AI SYSTEM PROMPT BUILDER ==========
+        function buildDoctorSystemPrompt() {
+            const roleLabels = { '主任': '科室主任/主任医师', '带组': '主治医师/带组医生', '主治': '主治医师', '住院': '住院医师/规培医生' };
+            const attitudeDesc = {
+                '支持': '你对新药持开放和支持态度，已经了解过基本数据，会主动询问更多细节、用药场景和患者管理方案。',
+                '反对': '你持怀疑和反对态度，习惯用现有方案（卡匹色替、阿培利司等），会提出犀利质疑：数据成熟度、OS证据、PIK3CA检测可行性、真实世界落地难度等。',
+                '中立': '你态度中立，没有明显倾向，会理性地问关键问题，需要代表提供有说服力的理由才会考虑改变用药习惯。',
+                '忙碌': '你非常忙碌，时间有限，只想听最核心的价值主张，对冗长介绍没有耐心，会打断并要求简明扼要。'
+            };
+            const roleType = APP.rolePlay.roleType || '主任';
+            const attitude = APP.rolePlay.attitude || '中立';
+            const roleLabel = roleLabels[roleType] || roleType;
+            const attDesc = attitudeDesc[attitude] || '';
+
+            return `你是一位${roleLabel}，正在接受一名罗氏制药医药代表的拜访。该代表正在推广产品"伊赫莱"（通用名：伊那利塞，Inavolisib）。
+
+## 你的角色性格
+${attDesc}
+你的回复应体现真实临床医生的思维方式：关注循证证据、患者获益、临床可操作性和经济负担。
+
+## 关于伊赫莱的核心知识（你已知道的背景）
+- **适应症**：HR+/HER2- 晚期乳腺癌，PIK3CA 突变，内分泌治疗进展后
+- **机制**：PI3Kα 高选择性抑制剂（>300倍于其他亚型），同时可降解 PIK3CA 突变体蛋白（"抑制+降解"双重机制）
+- **INAVO120 关键数据**：mPFS 17.2 vs 7.3 个月（HR 0.42，p<0.0001）；OS 34 vs 27 个月（HR 0.67，p=0.019）；ORR 62.7% vs 28.8%；停药率 6.8%（高血糖≥3级仅 6.8% vs 阿培利司 37%）
+- **竞品对比**：卡匹色替（AKT抑制剂，全人群入组，PFS 7.2 vs 3.6 月）；阿培利司（PI3Kα，高血糖严重，停药率高）
+- **医保**：2025年1月已纳入国家医保
+- **检测要求**：必须 PIK3CA 突变检测（ctDNA 或 tumor tissue），中国突变率约 45.6%
+
+## 对话规则
+1. 回复长度：2-4句话，自然口语化，像真实临床对话
+2. 根据你的态度性格（${attitude}型）提出相应的问题或质疑
+3. 随着对话推进，逐步深入：早期问基础数据，中期问临床落地，后期问患者管理或特定病例
+4. 如果代表回答得好，可适当认可，但${attitude === '反对' ? '仍然保持一定的审慎态度' : '自然推进到下一个问题'}
+5. 严格用中文回复，不要暴露你是AI
+6. 不要主动给代表提示或帮助，你是被拜访方，不是老师`;
+        }
+
+        // ========== AI CHAT ENGINE ==========
+        async function sendMessage() {
+            if (!APP.rolePlay.active) return;
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage('rep', text);
+            input.value = '';
+            document.getElementById('chatInput').disabled = true;
+
+            // Show typing indicator
+            const typingEl = document.createElement('div');
+            typingEl.className = 'chat-bubble doctor';
+            typingEl.id = 'typingIndicator';
+            typingEl.innerHTML = '<span style="color:var(--text-hint);">💬 正在思考...</span>';
+            document.getElementById('chatMessages').appendChild(typingEl);
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+
+            let reply = null;
+
+            // Build conversation history for AI (last 12 messages max)
+            const history = APP.rolePlay.messages.slice(-12).map(m => ({
+                role: m.role === 'rep' ? 'user' : 'assistant',
+                content: m.text
+            }));
+            const sysPrompt = buildDoctorSystemPrompt();
+
+            // Strategy 1: Try backend proxy (preferred - key not exposed in browser)
+            if (API_BASE) {
+                try {
+                    const resp = await fetch(API_BASE + '/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ messages: history, systemPrompt: sysPrompt }),
+                        signal: AbortSignal.timeout(22000)
+                    });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.success && data.reply) reply = data.reply;
+                    }
+                } catch (e) {
+                    console.warn('Backend AI failed:', e.message);
+                }
+            }
+
+            // Strategy 2: Direct DeepSeek call with AI_KEY (when backend unavailable or failed)
+            if (!reply && AI_KEY) {
+                try {
+                    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + AI_KEY
+                        },
+                        body: JSON.stringify({
+                            model: 'deepseek-chat',
+                            messages: [{ role: 'system', content: sysPrompt }, ...history],
+                            max_tokens: 300,
+                            temperature: 0.85,
+                            stream: false
+                        }),
+                        signal: AbortSignal.timeout(22000)
+                    });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.choices && data.choices[0]) reply = data.choices[0].message.content.trim();
+                    } else {
+                        const errData = await resp.json().catch(() => ({}));
+                        if (errData.error && errData.error.message && errData.error.message.includes('Insufficient Balance')) {
+                            showAIKeyPrompt('API Key 余额不足，请充值后重试，或在设置中更新 Key。');
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Direct AI call failed:', e.message);
+                }
+            }
+
+            // Strategy 3: Fallback to rule engine
+            if (!reply) {
+                const roundNum = APP.rolePlay.messages.filter(m => m.role === 'rep').length;
+                reply = generateDoctorReply(text, roundNum);
+                // Update badge to rule mode if AI consistently fails
+                const badge = document.getElementById('aiStatusBadge');
+                if (badge && badge.textContent.includes('AI')) {
+                    badge.textContent = '📋 规则模式';
+                    badge.style.background = '#fff3e0';
+                    badge.style.color = '#e65100';
+                }
+            }
+
+            // Remove typing indicator and show reply
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+            document.getElementById('chatInput').disabled = false;
+            document.getElementById('chatInput').focus();
+
+            addMessage('doctor', reply);
+        }
+
+        function showAIKeyPrompt(msg) {
+            const key = prompt((msg || '') + '\n\n请输入新的 DeepSeek API Key（sk-...）：');
+            if (key && key.startsWith('sk-')) {
+                AI_KEY = key.trim();
+                localStorage.setItem('ihl_ai_key', AI_KEY);
+                alert('✅ API Key 已保存！下次对话将自动使用。');
+            }
+        }
+
+        function openAISettings() {
+            const current = AI_KEY ? AI_KEY.substring(0, 8) + '...' + AI_KEY.slice(-4) : '未配置';
+            const serverStatus = API_BASE ? '✅ 后端在线（推荐）' : '⚠️ 无后端（纯静态模式）';
+            const msg = `⚡ AI 对话设置\n\n后端状态：${serverStatus}\n当前 API Key：${current}\n\n` +
+                `AI 模式说明：\n` +
+                `• 有后端时：Key 存在服务器，更安全\n` +
+                `• 无后端时：Key 存在本机，直接调用 DeepSeek\n\n` +
+                `如需更新 API Key，请在下方输入（留空不修改）：`;
+            const key = prompt(msg);
+            if (key === null) return; // cancelled
+            if (key.trim() === '') return; // empty - keep current
+            if (key.trim().startsWith('sk-')) {
+                AI_KEY = key.trim();
+                localStorage.setItem('ihl_ai_key', AI_KEY);
+                // Also update backend if available
+                if (API_BASE) {
+                    fetch(API_BASE + '/api/set-ai-key', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ key: AI_KEY })
+                    }).catch(() => {});
+                }
+                alert('✅ API Key 已保存！\n下次发送消息将自动使用 AI 对话模式。');
+            } else {
+                alert('❌ Key 格式不对，应以 sk- 开头');
+            }
+        }
+
+        function addMessage(role, text) {
+            const container = document.getElementById('chatMessages');
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble ' + role;
+            bubble.textContent = text;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+
+            APP.rolePlay.messages.push({ role, text, time: new Date().toISOString() });
+
+            // TTS: speak doctor's reply
+            if (role === 'doctor' && APP.voice.ttsEnabled) {
+                speakDoctorReply(text);
+            }
+        }
+
+        function endRolePlay() {
+            if (APP.rolePlay.messages.length < 6) {
+                alert('对话轮数太少，请至少进行3轮对话后再结束');
+                return;
+            }
+
+            APP.rolePlay.active = false;
+
+            // ---- AI 评分引擎 ----
+            const repMsgs = APP.rolePlay.messages.filter(m => m.role === 'rep').map(m => m.text);
+            const docMsgs = APP.rolePlay.messages.filter(m => m.role === 'doctor').map(m => m.text);
+            const allRepText = repMsgs.join(' ');
+            const allDocText = docMsgs.join(' ');
+
+            // === 1. 产品知识 (Knowledge) ===
+            let knowledge = 3; // baseline
+            const kp = { // knowledge points with regex + score
+                'PFS 17.2': { re: /17\.?2.*月|超双倍|翻倍/, pts: 2 },
+                'HR 0.42': { re: /0\.\s*42|降低\s*58%|风险.*降低.*58/, pts: 2 },
+                'OS 34个月': { re: /34.*月.*OS|OS.*34|总生存.*34/, pts: 2 },
+                '安全性数据': { re: /6\.\s*8%|停药率|停药.*6/, pts: 1 },
+                'PIK3CA机制': { re: /PI3Kα|突变体降解|高选择性.*300|双.?机制|抑制.*降解/, pts: 1 },
+                '指南推荐': { re: /NCCN|ESMO|CSCO|CBCS|指南/, pts: 1 },
+                'ORR/化疗推迟': { re: /62\.?7%|ORR|35\.?6|推迟化疗|化疗.*年/, pts: 1 },
+            };
+            let kpMatched = [];
+            Object.entries(kp).forEach(([name, { re, pts }]) => {
+                if (re.test(allRepText)) { knowledge += pts; kpMatched.push(name); }
+            });
+
+            // === 2. 需求挖掘 (Discovery) ===
+            let discovery = 3;
+            const askQs = repMsgs.filter(m => /[？?]/.test(m) || /您[觉认]得|您那边|您怎么|能说说|了解.*吗/.test(m));
+            discovery += Math.min(askQs.length * 1.5, 4);
+            if (/患者|病例|病人/.test(allRepText)) discovery += 1;
+            if (/您.*临床|您.*经验|您.*用/.test(allRepText)) discovery += 1;
+
+            // === 3. 竞品应对 (Competition) ===
+            let competition = 3;
+            const compMentions = allRepText.match(/卡匹|capivasertib|AKT|阿培|alpelisib|依维|everolimus|竞品/g);
+            if (compMentions) competition += Math.min(compMentions.length, 3);
+            if (/一线.*vs.*二线|源头|直击|精准.*优于|PI3Kα.*vs.*AKT/.test(allRepText)) competition += 2;
+            if (/停药率|安全性.*优势|高血糖.*37%|阿培.*高血糖/.test(allRepText)) competition += 1;
+
+            // === 4. 异议处理 (Objection) ===
+            let objection = 3;
+            // Check if doctor raised objections and rep addressed them
+            const docConcerns = allDocText.match(/担心|顾虑|风险|问题|怎么办|怎么说服|不合理/g);
+            if (docConcerns && docConcerns.length > 0) {
+                // Rep addressed the same topics that doctor raised
+                if (/不[用会]|可以|管理|方案|解决|应对/.test(allRepText)) objection += Math.min(docConcerns.length, 3);
+                if (/安全.*管|血糖.*管|监测/.test(allRepText)) objection += 1;
+                if (/费用|月.*自付|医保.*报销|价格/.test(allRepText)) objection += 1;
+                if (/数据.*证实|研究.*显示|临床.*证明/.test(allRepText)) objection += 1;
+            } else {
+                objection += 2; // doctor didn't push back much
+            }
+
+            // === 5. 拜访技巧 (Technique) ===
+            let technique = 3;
+            // Opening quality
+            const firstRep = repMsgs[0] || '';
+            if (firstRep.length > 30) technique += 1;
+            if (/您好|你好|我是|罗氏|伊赫莱/.test(firstRep)) technique += 1;
+            // Closing quality
+            const lastRep = repMsgs[repMsgs.length - 1] || '';
+            if (/下次|再.*联系|总结|今天|谢[谢谢]|期待/.test(lastRep)) technique += 1;
+            if (lastRep.length > 40) technique += 1;
+            // Structure
+            if (repMsgs.length >= 4) technique += 1;
+            if (/案例|病例|比如|举例|例如/.test(allRepText)) technique += 1;
+            if (/建议|下一步|计划|后续/.test(allRepText)) technique += 1;
+
+            // Clamp scores
+            const scores = {
+                knowledge: Math.min(10, Math.round(knowledge)),
+                discovery: Math.min(10, Math.round(discovery)),
+                competition: Math.min(10, Math.round(competition)),
+                objection: Math.min(10, Math.round(objection)),
+                technique: Math.min(10, Math.round(technique)),
+            };
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+
+            // === Generate Highlights ===
+            const highlights = [];
+            const suggestions = [];
+
+            if (scores.knowledge >= 7) {
+                const points = kpMatched.length >= 3 ? `准确引用${kpMatched.length}项关键数据(${kpMatched.slice(0,3).join('、')})` : '产品知识扎实';
+                highlights.push(`✅ 产品知识扎实：${points}，数据引用有据`);
+            } else if (scores.knowledge >= 5) {
+                highlights.push('✅ 基本了解产品信息，但数据引用不够精确');
+                suggestions.push('💡 建议熟悉关键数据：PFS 17.2个月、HR=0.42、停药率6.8%——这些都是拜访中最有说服力的数字');
+            } else {
+                suggestions.push('💡 产品知识储备不足，建议先通读知识库中的"关键临床数据"和"核心推广要点"章节');
+            }
+
+            if (scores.discovery >= 7) {
+                highlights.push(`✅ 需求挖掘出色：主动提问${askQs.length}次，深入了解医生关切点`);
+            } else if (scores.discovery >= 5) {
+                highlights.push('✅ 有一定提问意识，可增加开放式问题引导医生表达真实顾虑');
+                suggestions.push('💡 尝试提问：「您手上有没有PIK3CA突变的患者？」「您最担心新药哪个方面？」');
+            } else {
+                suggestions.push('💡 拜访节奏偏单向输出。增加开放式提问能更好理解医生真实态度');
+            }
+
+            if (scores.competition >= 7) {
+                highlights.push('✅ 竞品应对有效：能清晰区分伊赫莱与竞品的定位差异');
+            } else if (compMentions && compMentions.length > 0) {
+                suggestions.push('💡 涉及竞品时可强调：一线vs二线定位差异、HR 0.42 vs 0.51、停药率6.8% vs 13.0%');
+            }
+
+            if (scores.objection >= 7) {
+                highlights.push('✅ 异议处理得体：用数据和方案回应医生顾虑');
+            } else if (docConcerns && docConcerns.length > 0) {
+                suggestions.push('💡 面对异议不要回避，用具体数据和管理方案给予医生信心');
+            }
+
+            if (scores.technique >= 7) {
+                highlights.push('✅ 拜访结构完整：开场-提问-回应-总结，节奏把控好');
+            } else {
+                if (!/谢[谢谢]|下次|再.*联系|期待/.test(lastRep)) {
+                    suggestions.push('💡 拜访结束时记得总结关键信息并约定下一步行动计划');
+                }
+                if (firstRep.length < 20) {
+                    suggestions.push('💡 开场可更完整：自我介绍 + 拜访目的 + 询问医生时间是否方便');
+                }
+            }
+
+            if (highlights.length === 0) {
+                highlights.push('✅ 完成了一次完整的拜访练习，继续加油！');
+            }
+            if (suggestions.length === 0) {
+                suggestions.push('💡 整体表现不错！可查看知识库了解更多产品数据以进一步提升说服力');
+            }
+
+            // Display scores
+            document.getElementById('totalScore').textContent = total;
+            const dims = ['knowledge', 'discovery', 'competition', 'objection', 'technique'];
+            const dimNames = ['产品知识', '需求挖掘', '竞品应对', '异议处理', '拜访技巧'];
+            const dimContainer = document.getElementById('dimensionScores');
+            dimContainer.innerHTML = dims.map((d, i) => `
+                <div class="score-dimension">
+                    <span class="score-dim-name">${dimNames[i]}</span>
+                    <div class="score-dim-bar"><div class="score-dim-fill" style="width:${scores[d]*10}%"></div></div>
+                    <span class="score-dim-val">${scores[d]}/10</span>
+                </div>
+            `).join('');
+
+            document.getElementById('scoreHighlights').innerHTML = highlights.map(h => `<p>${h}</p>`).join('');
+            document.getElementById('scoreSuggestions').innerHTML = suggestions.map(s => `<p>${s}</p>`).join('');
+
+            // Save record
+            const record = {
+                id: Date.now(),
+                user: APP.user,
+                roleType: APP.rolePlay.roleType,
+                attitude: APP.rolePlay.attitude,
+                scenarios: APP.rolePlay.scenarios,
+                messages: APP.rolePlay.messages,
+                scores,
+                total,
+                highlights,
+                suggestions,
+                time: new Date().toISOString()
+            };
+            APP.records.unshift(record);
+            localStorage.setItem('ihl_records', JSON.stringify(APP.records));
+
+            // Sync to server if available
+            syncRecord(record);
+
+            // Switch view
+            document.getElementById('rp-chat').style.display = 'none';
+            document.getElementById('rp-score').style.display = 'block';
+
+            updateRecordsView();
+        }
+
+        // Sync a record to the backend server
+        function syncRecord(record) {
+            if (!API_BASE) return; // local file mode, no backend
+            try {
+                fetch(API_BASE + '/api/records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
+                }).then(r => r.json()).then(data => {
+                    if (data.success) {
+                        console.log('记录已同步到服务器, ID:', data.id);
+                    }
+                }).catch(() => {
+                    // Silent fail - local storage already has the data
+                });
+            } catch(e) { /* silent fail */ }
+        }
+
+        // Also sync existing local records when online
+        function syncPendingRecords() {
+            if (!API_BASE) return;
+            const localRecords = APP.records;
+            let synced = parseInt(localStorage.getItem('ihl_synced_count') || '0');
+            const toSync = localRecords.slice(0, localRecords.length - synced);
+            if (toSync.length === 0) return;
+
+            let count = 0;
+            const doNext = () => {
+                if (count >= toSync.length) {
+                    localStorage.setItem('ihl_synced_count', String(localRecords.length));
+                    return;
+                }
+                fetch(API_BASE + '/api/records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(toSync[count])
+                }).then(() => {
+                    count++;
+                    doNext();
+                }).catch(() => {
+                    count++;
+                    doNext();
+                });
+            };
+            doNext();
+        }
+
+        function resetRolePlay() {
+            APP.rolePlay = { roleType: null, attitude: null, scenarios: [], messages: [], active: false, usedReplies: [] };
+            document.querySelectorAll('#roleTypeGroup .tag, #attitudeGroup .tag').forEach(t => t.classList.remove('selected'));
+            document.querySelectorAll('#scenarioGroup .scenario-item').forEach(s => s.classList.remove('selected'));
+            document.getElementById('rp-score').style.display = 'none';
+            document.getElementById('rp-config').style.display = 'block';
+            stopTTS();
+        }
+
+        // ========== VOICE INPUT (STT) ==========
+        let recognition = null;
+
+        function initSpeechRecognition() {
+            if (recognition) return;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert('您的浏览器不支持语音识别。请使用 Chrome 浏览器。');
+                return;
+            }
+            recognition = new SpeechRecognition();
+            recognition.lang = 'zh-CN';
+            recognition.interimResults = true;
+            recognition.continuous = true;
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('chatInput').value = transcript;
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech error:', event.error);
+                stopVoiceInput();
+                if (event.error === 'not-allowed') {
+                    alert('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问');
+                } else if (event.error === 'no-speech') {
+                    // No speech detected, keep listening
+                } else {
+                    alert('语音识别出错: ' + event.error);
+                }
+            };
+
+            recognition.onend = () => {
+                stopVoiceInput();
+            };
+        }
+
+        function toggleVoiceInput() {
+            initSpeechRecognition();
+            if (!recognition) return;
+
+            const micBtn = document.getElementById('micBtn');
+            const statusEl = document.getElementById('voiceStatus');
+
+            if (micBtn.classList.contains('listening')) {
+                stopVoiceInput();
+            } else {
+                try {
+                    recognition.start();
+                    micBtn.classList.add('listening');
+                    micBtn.textContent = '⏹';
+                    statusEl.style.display = 'block';
+                    document.getElementById('chatInput').placeholder = '正在听取语音...';
+                } catch (e) {
+                    console.error('Recognition start error:', e);
+                }
+            }
+        }
+
+        function stopVoiceInput() {
+            const micBtn = document.getElementById('micBtn');
+            const statusEl = document.getElementById('voiceStatus');
+            micBtn.classList.remove('listening');
+            micBtn.textContent = '🎤';
+            statusEl.style.display = 'none';
+            document.getElementById('chatInput').placeholder = '输入你的拜访话术...';
+            if (recognition) {
+                try { recognition.stop(); } catch (e) {}
+            }
+        }
+
+        function cancelVoiceInput() {
+            if (recognition) {
+                try { recognition.abort(); } catch (e) {}
+            }
+            stopVoiceInput();
+            document.getElementById('chatInput').value = '';
+        }
+
+        // ========== TEXT-TO-SPEECH (TTS) ==========
+        function toggleTTS() {
+            APP.voice.ttsEnabled = !APP.voice.ttsEnabled;
+            const ttsBtn = document.getElementById('ttsToggle');
+            if (APP.voice.ttsEnabled) {
+                ttsBtn.textContent = '🔊 播报中';
+                ttsBtn.style.color = 'var(--roche-blue)';
+                ttsBtn.style.fontWeight = '600';
+            } else {
+                ttsBtn.textContent = '🔇 播报';
+                ttsBtn.style.color = 'var(--text-hint)';
+                ttsBtn.style.fontWeight = 'normal';
+                stopTTS();
+            }
+        }
+
+        function speakDoctorReply(text) {
+            if (!APP.voice.ttsEnabled) return;
+            if (!window.speechSynthesis) return;
+
+            stopTTS();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 0.9;
+            // Try to pick a female voice
+            const voices = speechSynthesis.getVoices();
+            const zhVoice = voices.find(v => v.lang.startsWith('zh') && v.name.includes('Female')) ||
+                            voices.find(v => v.lang.startsWith('zh-CN')) ||
+                            voices.find(v => v.lang.startsWith('zh'));
+            if (zhVoice) utterance.voice = zhVoice;
+            APP.voice.currentUtterance = utterance;
+            speechSynthesis.speak(utterance);
+        }
+
+        function stopTTS() {
+            if (window.speechSynthesis) {
+                speechSynthesis.cancel();
+            }
+            APP.voice.currentUtterance = null;
+        }
+
+        // Pre-load voices
+        if (window.speechSynthesis) {
+            speechSynthesis.getVoices();
+            speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+        }
+
+        // ========== RECORDS ==========
+        function switchRecordView(view) {
+            APP.recordView = view;
+            document.querySelectorAll('#trendTabs .trend-tab').forEach(t => t.classList.remove('active'));
+            if (view === 'list') {
+                document.querySelector('#trendTabs .trend-tab:first-child').classList.add('active');
+                document.getElementById('recordsList').style.display = 'block';
+                document.getElementById('trendArea').style.display = 'none';
+            } else {
+                document.querySelector('#trendTabs .trend-tab:last-child').classList.add('active');
+                document.getElementById('recordsList').style.display = 'none';
+                document.getElementById('trendArea').style.display = 'block';
+                renderTrendCharts();
+            }
+        }
+
+        function updateRecordsView() {
+            document.getElementById('statTotal').textContent = APP.records.length;
+
+            if (APP.records.length > 0) {
+                const scores = APP.records.map(r => r.total);
+                document.getElementById('statAvg').textContent = (scores.reduce((a,b)=>a+b,0) / scores.length).toFixed(1);
+                document.getElementById('statBest').textContent = Math.max(...scores);
+                document.getElementById('trendTabs').style.display = 'flex';
+            } else {
+                document.getElementById('statAvg').textContent = '--';
+                document.getElementById('statBest').textContent = '--';
+                document.getElementById('trendTabs').style.display = 'none';
+                document.getElementById('trendArea').style.display = 'none';
+            }
+
+            const list = document.getElementById('recordsList');
+            if (APP.records.length === 0) {
+                document.getElementById('trendTabs').style.display = 'none';
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">暂无练习记录</div>
+                        <div style="font-size:12px;color:var(--text-hint);margin-top:4px;">去「角色扮演」开始你的第一次练习吧</div>
+                    </div>`;
+                return;
+            }
+
+            const attitudeLabels = { '支持': '支持型', '反对': '反对型', '中立': '中立型', '忙碌': '忙碌型' };
+            const roleLabels = { '主任': '科室主任', '带组': '带组医生', '主治': '主治医师', '住院': '住院医师' };
+
+            list.innerHTML = APP.records.slice(0, 20).map(r => {
+                const scoreColor = r.total >= 40 ? '#0F9D58' : r.total >= 30 ? '#F4B400' : '#DB4437';
+                return `
+                <div class="record-item" onclick="viewRecordDetail('${r.id}')">
+                    <div class="rec-top">
+                        <span class="rec-scene">${roleLabels[r.roleType] || r.roleType} · ${attitudeLabels[r.attitude] || r.attitude}</span>
+                        <span class="rec-score" style="color:${scoreColor}">${r.total}/50</span>
+                    </div>
+                    <div class="rec-meta">
+                        <span>🎯 ${r.scenarios.join('、')}</span>
+                        <span>💬 ${r.messages.length}轮</span>
+                        <span>🕐 ${new Date(r.time).toLocaleDateString('zh-CN')}</span>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // Keep trend view if active
+            if (APP.recordView === 'trend') {
+                document.getElementById('recordsList').style.display = 'none';
+                document.getElementById('trendArea').style.display = 'block';
+                renderTrendCharts();
+            } else {
+                document.getElementById('recordsList').style.display = 'block';
+                document.getElementById('trendArea').style.display = 'none';
+            }
+        }
+
+        function viewRecordDetail(id) {
+            const record = APP.records.find(r => r.id == id);
+            if (!record) return;
+
+            const attitudeLabels = { '支持': '支持型', '反对': '反对型', '中立': '中立型', '忙碌': '忙碌型' };
+            const roleLabels = { '主任': '科室主任', '带组': '带组医生', '主治': '主治医师', '住院': '住院医师' };
+            const dimNames = ['产品知识', '需求挖掘', '竞品应对', '异议处理', '拜访技巧'];
+            const dims = ['knowledge', 'discovery', 'competition', 'objection', 'technique'];
+            const dimColors = ['#0033A0', '#0F9D58', '#F4B400', '#DB4437', '#7B1FA2'];
+            const scoreColor = record.total >= 40 ? '#0F9D58' : record.total >= 30 ? '#F4B400' : '#DB4437';
+
+            const chatHtml = record.messages.map(m => {
+                const cls = m.role === 'rep' ? 'rep' : 'doc';
+                const roleName = m.role === 'rep' ? '💊 我' : '👨‍⚕️ 医生';
+                return `<div class="detail-chat-item ${cls}">
+                    <span class="chat-role">${roleName}</span>${m.text}
+                </div>`;
+            }).join('');
+
+            const highlightsHtml = (record.highlights && record.highlights.length)
+                ? record.highlights.map(h => `<div class="detail-highlight-item">${h}</div>`).join('')
+                : '<div class="detail-highlight-item">✅ 完成了一次完整的拜访练习</div>';
+
+            const suggestionsHtml = (record.suggestions && record.suggestions.length)
+                ? record.suggestions.map(s => `<div class="detail-suggest-item">${s}</div>`).join('')
+                : '<div class="detail-suggest-item">💡 整体表现不错！可查看知识库了解更多产品数据</div>';
+
+            const dimsHtml = dims.map((d, i) => `
+                <div class="detail-dim-row">
+                    <span class="detail-dim-name">${dimNames[i]}</span>
+                    <div class="detail-dim-bar"><div class="detail-dim-fill" style="width:${record.scores[d]*10}%;background:${dimColors[i]}"></div></div>
+                    <span class="detail-dim-val">${record.scores[d]}/10</span>
+                </div>
+            `).join('');
+
+            document.getElementById('detailPanel').innerHTML = `
+                <div class="detail-header">
+                    <div class="detail-header-row">
+                        <div class="detail-header-info">
+                            <h3>${roleLabels[record.roleType]} · ${attitudeLabels[record.attitude]}</h3>
+                            <div class="detail-meta">
+                                <span>🎯 ${record.scenarios.join('、')}</span>
+                                <span>🕐 ${new Date(record.time).toLocaleString('zh-CN')}</span>
+                            </div>
+                        </div>
+                        <button class="detail-close" onclick="closeDetail()">✕</button>
+                    </div>
+                    <div class="detail-score-badge" style="background:${scoreColor};color:#fff;">${record.total}/50</div>
+                </div>
+                <div class="detail-body">
+                    <div class="detail-section">
+                        <div class="detail-section-title">📊 五维评分</div>
+                        ${dimsHtml}
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title">✨ 亮点</div>
+                        ${highlightsHtml}
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title">💡 改进建议</div>
+                        ${suggestionsHtml}
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title">💬 对话回放（${record.messages.length}轮）</div>
+                        ${chatHtml}
+                    </div>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn btn-outline" onclick="closeDetail()">关闭</button>
+                    <button class="btn btn-primary" onclick="exportRecord('${record.id}')">📥 导出报告</button>
+                </div>
+            `;
+
+            document.getElementById('detailOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            document.getElementById('detailOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // ========== TREND CHARTS ==========
+        function renderTrendCharts() {
+            const records = [...APP.records].reverse(); // oldest first
+            if (records.length < 1) {
+                document.getElementById('trendArea').innerHTML = '<div class="trend-empty">暂无数据</div>';
+                return;
+            }
+
+            renderTotalTrend(records);
+            renderRadarChart(records);
+        }
+
+        function renderTotalTrend(records) {
+            const canvas = document.getElementById('trendCanvas');
+            const dpr = window.devicePixelRatio || 1;
+            const width = canvas.parentElement.clientWidth - 32;
+            const height = 220;
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            // Clear
+            ctx.clearRect(0, 0, width, height);
+
+            // Padding
+            const pad = { top: 30, right: 20, bottom: 45, left: 40 };
+            const chartW = width - pad.left - pad.right;
+            const chartH = height - pad.top - pad.bottom;
+
+            // Title
+            ctx.fillStyle = '#1A1A2E';
+            ctx.font = '14px -apple-system, "PingFang SC", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('总分趋势', width / 2, 18);
+
+            if (records.length < 2) {
+                ctx.fillStyle = '#9AA0A6';
+                ctx.font = '13px -apple-system, "PingFang SC", sans-serif';
+                ctx.fillText('需要至少2次练习才能显示趋势', width / 2, height / 2);
+                return;
+            }
+
+            const scores = records.map(r => r.total);
+            const maxScore = 50;
+            const minScore = Math.max(0, Math.min(...scores) - 5);
+
+            // Grid lines
+            ctx.strokeStyle = '#E8E8F0';
+            ctx.lineWidth = 1;
+            const gridLines = 5;
+            for (let i = 0; i <= gridLines; i++) {
+                const y = pad.top + (chartH / gridLines) * i;
+                ctx.beginPath();
+                ctx.moveTo(pad.left, y);
+                ctx.lineTo(pad.left + chartW, y);
+                ctx.stroke();
+
+                const val = maxScore - ((maxScore - minScore) / gridLines) * i;
+                ctx.fillStyle = '#9AA0A6';
+                ctx.font = '11px -apple-system, "PingFang SC", sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(Math.round(val), pad.left - 8, y + 4);
+            }
+
+            // X-axis labels
+            const maxLabels = Math.min(records.length, 8);
+            const step = Math.max(1, Math.floor(records.length / maxLabels));
+            records.forEach((r, i) => {
+                if (i % step === 0 || i === records.length - 1) {
+                    const x = pad.left + (chartW / (records.length - 1)) * i;
+                    ctx.fillStyle = '#5F6368';
+                    ctx.font = '10px -apple-system, "PingFang SC", sans-serif';
+                    ctx.textAlign = 'center';
+                    const d = new Date(r.time);
+                    ctx.fillText(`${d.getMonth()+1}/${d.getDate()}`, x, height - pad.bottom + 18);
+                }
+            });
+
+            // Y-axis label
+            ctx.save();
+            ctx.translate(12, pad.top + chartH / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillStyle = '#5F6368';
+            ctx.font = '11px -apple-system, "PingFang SC", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('得分', 0, 0);
+            ctx.restore();
+
+            // Draw line
+            const points = scores.map((s, i) => ({
+                x: pad.left + (chartW / (scores.length - 1)) * i,
+                y: pad.top + chartH - ((s - minScore) / (maxScore - minScore)) * chartH
+            }));
+
+            // Gradient fill
+            const gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
+            gradient.addColorStop(0, 'rgba(0,51,160,0.15)');
+            gradient.addColorStop(1, 'rgba(0,51,160,0.02)');
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            points.forEach(p => ctx.lineTo(p.x, p.y));
+            ctx.lineTo(points[points.length - 1].x, pad.top + chartH);
+            ctx.lineTo(points[0].x, pad.top + chartH);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Line
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                const cp1x = (points[i].x + points[i-1].x) / 2;
+                ctx.bezierCurveTo(cp1x, points[i-1].y, cp1x, points[i].y, points[i].x, points[i].y);
+            }
+            ctx.strokeStyle = '#0033A0';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Dots
+            points.forEach((p, i) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                ctx.strokeStyle = '#0033A0';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#0033A0';
+                ctx.font = 'bold 11px -apple-system, "PingFang SC", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(scores[i], p.x, p.y - 12);
+            });
+        }
+
+        function renderRadarChart(records) {
+            const canvas = document.getElementById('radarCanvas');
+            const dpr = window.devicePixelRatio || 1;
+            const width = canvas.parentElement.clientWidth - 32;
+            const height = 300;
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, width, height);
+
+            const dims = ['knowledge', 'discovery', 'competition', 'objection', 'technique'];
+            const dimNames = ['产品知识', '需求挖掘', '竞品应对', '异议处理', '拜访技巧'];
+            const dimColors = ['#0033A0', '#0F9D58', '#F4B400', '#DB4437', '#7B1FA2'];
+
+            // Title
+            ctx.fillStyle = '#1A1A2E';
+            ctx.font = '14px -apple-system, "PingFang SC", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('五维能力雷达图', width / 2, 18);
+
+            // Calculate averages
+            const avgs = dims.map(d => {
+                const vals = records.map(r => r.scores[d] || 0);
+                return vals.reduce((a, b) => a + b, 0) / vals.length;
+            });
+            const latest = dims.map(d => records[records.length - 1].scores[d] || 0);
+
+            if (records.length < 2) {
+                ctx.fillStyle = '#9AA0A6';
+                ctx.font = '13px -apple-system, "PingFang SC", sans-serif';
+                ctx.fillText('需要至少2次练习才能显示雷达图', width / 2, height / 2);
+                return;
+            }
+
+            const cx = width / 2;
+            const cy = height / 2 + 10;
+            const maxR = Math.min(width, height) / 2 - 60;
+            const n = dims.length;
+            const maxVal = 10;
+
+            // Grid
+            for (let level = 2; level <= 10; level += 2) {
+                ctx.beginPath();
+                for (let i = 0; i < n; i++) {
+                    const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+                    const r = (level / maxVal) * maxR;
+                    const x = cx + r * Math.cos(angle);
+                    const y = cy + r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = '#E8E8F0';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                ctx.fillStyle = '#C0C4CC';
+                ctx.font = '9px -apple-system, "PingFang SC", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(level, cx, cy - (level / maxVal) * maxR + 3);
+            }
+
+            // Axis lines
+            for (let i = 0; i < n; i++) {
+                const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + maxR * Math.cos(angle), cy + maxR * Math.sin(angle));
+                ctx.strokeStyle = '#E0E4E8';
+                ctx.stroke();
+
+                // Label
+                const lx = cx + (maxR + 22) * Math.cos(angle);
+                const ly = cy + (maxR + 22) * Math.sin(angle);
+                ctx.fillStyle = '#1A1A2E';
+                ctx.font = '12px -apple-system, "PingFang SC", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(dimNames[i], lx, ly);
+            }
+
+            // Average radar
+            ctx.beginPath();
+            for (let i = 0; i < n; i++) {
+                const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+                const r = (avgs[i] / maxVal) * maxR;
+                const x = cx + r * Math.cos(angle);
+                const y = cy + r * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(0,51,160,0.08)';
+            ctx.fill();
+            ctx.strokeStyle = '#0033A0';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Latest radar
+            ctx.beginPath();
+            for (let i = 0; i < n; i++) {
+                const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+                const r = (latest[i] / maxVal) * maxR;
+                const x = cx + r * Math.cos(angle);
+                const y = cy + r * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(15,157,88,0.1)';
+            ctx.fill();
+            ctx.strokeStyle = '#0F9D58';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Latest dots
+            for (let i = 0; i < n; i++) {
+                const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+                const r = (latest[i] / maxVal) * maxR;
+                const x = cx + r * Math.cos(angle);
+                const y = cy + r * Math.sin(angle);
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#0F9D58';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Legend
+            const lx = width - 100;
+            const ly = height - 30;
+            ctx.fillStyle = '#0033A0';
+            ctx.fillRect(lx, ly - 4, 16, 3);
+            ctx.setLineDash([2, 2]);
+            ctx.strokeStyle = '#0033A0';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(lx, ly - 2.5);
+            ctx.lineTo(lx + 16, ly - 2.5);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#5F6368';
+            ctx.font = '10px -apple-system, "PingFang SC", sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('历史均值', lx + 22, ly + 1);
+
+            ctx.fillStyle = '#0F9D58';
+            ctx.fillRect(lx + 80, ly - 4, 16, 3);
+            ctx.fillText('最近一次', lx + 102, ly + 1);
+        }
+
+        // ========== EXPORT ==========
+        function exportRecord(id) {
+            const record = APP.records.find(r => r.id == id);
+            if (!record) return;
+
+            const attitudeLabels = { '支持': '支持型', '反对': '反对型', '中立': '中立型', '忙碌': '忙碌型' };
+            const roleLabels = { '主任': '科室主任', '带组': '带组医生', '主治': '主治医师', '住院': '住院医师' };
+            const dimNames = ['产品知识', '需求挖掘', '竞品应对', '异议处理', '拜访技巧'];
+            const dims = ['knowledge', 'discovery', 'competition', 'objection', 'technique'];
+
+            let text = '═══════════════════════════════\n';
+            text += '  伊赫莱拜访练习报告\n';
+            text += '═══════════════════════════════\n\n';
+            text += `姓名：${record.user.name || '未设置'}\n`;
+            text += `时间：${new Date(record.time).toLocaleString('zh-CN')}\n`;
+            text += `角色：${roleLabels[record.roleType]} · ${attitudeLabels[record.attitude]}\n`;
+            text += `场景：${record.scenarios.join('、')}\n`;
+            text += `对话轮数：${record.messages.length}轮\n\n`;
+            text += `【总分】${record.total}/50\n\n`;
+            text += '─── 五维评分 ───\n';
+            dims.forEach((d, i) => {
+                const bar = '█'.repeat(record.scores[d]) + '░'.repeat(10 - record.scores[d]);
+                text += `${dimNames[i]}：${bar} ${record.scores[d]}/10\n`;
+            });
+
+            if (record.highlights && record.highlights.length) {
+                text += '\n─── 亮点 ───\n';
+                record.highlights.forEach(h => {
+                    text += `  ✨ ${h.replace(/<[^>]*>/g, '')}\n`;
+                });
+            }
+
+            if (record.suggestions && record.suggestions.length) {
+                text += '\n─── 改进建议 ───\n';
+                record.suggestions.forEach(s => {
+                    text += `  💡 ${s.replace(/<[^>]*>/g, '')}\n`;
+                });
+            }
+
+            text += '\n─── 对话全文 ───\n\n';
+            record.messages.forEach((m, i) => {
+                const prefix = m.role === 'rep' ? '【我】' : '【医生】';
+                text += `${prefix} ${m.text}\n\n`;
+            });
+
+            text += '═══════════════════════════════\n';
+            text += `报告生成时间：${new Date().toLocaleString('zh-CN')}\n`;
+
+            const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `伊赫莱练习报告_${new Date(record.time).toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ========== KNOWLEDGE BASE ==========
+        function renderKBChapterList() {
+            const list = document.getElementById('kb-chapter-list');
+            list.innerHTML = KB_DATA.map(ch => `
+                <div class="kb-chapter-card" onclick="kbOpenChapter('${ch.id}')">
+                    <div class="kb-ch-icon ${ch.colorClass}">${ch.icon}</div>
+                    <div class="kb-ch-card-info">
+                        <div class="kb-ch-title">${ch.title}</div>
+                        <div class="kb-ch-desc">${ch.desc}</div>
+                    </div>
+                    <div class="kb-ch-card-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        function kbOpenChapter(chapterId) {
+            const ch = KB_DATA.find(c => c.id === chapterId);
+            if (!ch) return;
+
+            document.getElementById('kb-list-view').style.display = 'none';
+            document.getElementById('kb-search-view').style.display = 'none';
+            const detailView = document.getElementById('kb-detail-view');
+            detailView.style.display = 'block';
+
+            document.getElementById('kb-detail-content').innerHTML = `
+                <div class="kb-detail-title">
+                    <span style="font-size:24px;">${ch.icon}</span> ${ch.title}
+                </div>
+                <div class="kb-detail-body">${ch.html}</div>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function kbBackToList() {
+            document.getElementById('kb-detail-view').style.display = 'none';
+            document.getElementById('kb-search-view').style.display = 'none';
+            document.getElementById('kb-list-view').style.display = 'block';
+            document.getElementById('knowledgeSearch').value = '';
+            document.getElementById('kbSearchClear').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function kbSearch() {
+            const query = document.getElementById('knowledgeSearch').value.trim();
+            const clearBtn = document.getElementById('kbSearchClear');
+
+            if (!query) {
+                clearBtn.style.display = 'none';
+                document.getElementById('kb-detail-view').style.display = 'none';
+                document.getElementById('kb-search-view').style.display = 'none';
+                document.getElementById('kb-list-view').style.display = 'block';
+                return;
+            }
+
+            clearBtn.style.display = 'block';
+
+            const results = [];
+            KB_DATA.forEach(ch => {
+                // Search in title, desc, and HTML content
+                const searchText = (ch.title + ' ' + ch.desc + ' ' + ch.html.replace(/<[^>]*>/g, ' ')).toLowerCase();
+                const q = query.toLowerCase();
+                const index = searchText.indexOf(q);
+                if (index >= 0) {
+                    // Extract snippet
+                    const plainText = ch.html.replace(/<[^>]*>/g, ' ');
+                    const cleanIdx = plainText.toLowerCase().indexOf(q);
+                    let snippet = '';
+                    if (cleanIdx >= 0) {
+                        const start = Math.max(0, cleanIdx - 40);
+                        const end = Math.min(plainText.length, cleanIdx + query.length + 80);
+                        snippet = (start > 0 ? '...' : '') + plainText.substring(start, end) + (end < plainText.length ? '...' : '');
+                        // Highlight match
+                        const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                        snippet = snippet.replace(regex, '<em>$1</em>');
+                    }
+                    results.push({ chapter: ch, snippet });
+                }
+            });
+
+            if (results.length > 0) {
+                document.getElementById('kb-list-view').style.display = 'none';
+                document.getElementById('kb-detail-view').style.display = 'none';
+                document.getElementById('kb-search-view').style.display = 'block';
+                document.getElementById('kb-search-info').textContent = `找到 ${results.length} 个相关章节`;
+                document.getElementById('kb-search-results').innerHTML = results.map(r => `
+                    <div class="kb-search-card" onclick="kbOpenChapter('${r.chapter.id}')">
+                        <div class="kb-sc-chapter">${r.chapter.icon} ${r.chapter.title}</div>
+                        <div class="kb-sc-title">${r.chapter.desc}</div>
+                        <div class="kb-sc-snippet">${r.snippet}</div>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('kb-list-view').style.display = 'none';
+                document.getElementById('kb-detail-view').style.display = 'none';
+                document.getElementById('kb-search-view').style.display = 'block';
+                document.getElementById('kb-search-info').textContent = '未找到相关内容';
+                document.getElementById('kb-search-results').innerHTML = `
+                    <div class="empty-state" style="padding:40px 20px;">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-text">没有找到"${query}"相关的内容</div>
+                        <div style="font-size:12px;color:var(--text-hint);margin-top:4px;">请尝试其他关键词</div>
+                    </div>`;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function kbClearSearch() {
+            document.getElementById('knowledgeSearch').value = '';
+            document.getElementById('kbSearchClear').style.display = 'none';
+            document.getElementById('kb-detail-view').style.display = 'none';
+            document.getElementById('kb-search-view').style.display = 'none';
+            document.getElementById('kb-list-view').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========== STARTUP ==========
+        init();
+    </script>
+</body>
+</html>
